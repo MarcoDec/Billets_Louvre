@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Billet du Louvre" company="MD" webLink="" view-date="2016-02-20" view-index="0" gantt-divider-location="374" resource-divider-location="300" version="2.7.2" locale="fr">
+<?xml version="1.0" encoding="UTF-8"?><project name="Billet du Louvre" company="MD" webLink="" view-date="2016-02-21" view-index="0" gantt-divider-location="374" resource-divider-location="300" version="2.7.2" locale="fr">
     <description><![CDATA[Ceci représente le planning des activités liées à la conception de la solution répondant au cdc du Louvre]]></description>
-    <view zooming-state="default:2" id="gantt-chart">
+    <view zooming-state="default:0" id="gantt-chart">
         <field id="tpd3" name="Nom" width="55" order="0"/>
         <field id="tpd4" name="Date de début" width="22" order="1"/>
         <field id="tpd5" name="Date de fin" width="22" order="2"/>
-        <option id="color.recent"><![CDATA[#ff9999 #ff0000]]></option>
+        <option id="color.recent"><![CDATA[#ff6666 #33cc00 #00cc00 #006699 #ff9999 #ff0000]]></option>
     </view>
     <view id="resource-table">
-        <field id="0" name="Nom" width="57" order="0"/>
-        <field id="1" name="Rôle par défaut" width="42" order="1"/>
+        <field id="0" name="Nom" width="50" order="0"/>
+        <field id="1" name="Rôle par défaut" width="49" order="1"/>
     </view>
     <!-- -->
     <calendars>
@@ -34,18 +34,35 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="0" name="Analyses de faisabilité technique" color="#000000" meeting="false" start="2016-02-22" duration="8" complete="0" expand="true">
+        <task id="0" name="Analyses de faisabilité technique" color="#000000" meeting="false" start="2016-02-22" duration="7" complete="33" expand="true">
             <depend id="7" type="2" difference="0" hardness="Strong"/>
-            <task id="2" name="API Calendrier Google" color="#8cb6ce" meeting="false" start="2016-02-22" duration="2" complete="0" expand="true">
-                <depend id="3" type="2" difference="0" hardness="Strong"/>
+            <task id="2" name="API Calendrier Google" color="#006699" meeting="false" start="2016-02-26" duration="4" complete="40" expand="true">
+                <notes><![CDATA[Ok pour lire les évènements
+Ko pour créer un évènement
+Ko pour modifier un évènement
+]]></notes>
             </task>
-            <task id="3" name="API QR Code" color="#8cb6ce" meeting="false" start="2016-02-27" duration="2" complete="0" expand="true">
+            <task id="3" name="API QR Code" color="#00cc00" meeting="false" start="2016-02-22" duration="1" complete="100" expand="true">
+                <notes><![CDATA[Ok choix de l'API http://qrickit.com
+car google API non maintenue.
+Test réalisés OK.]]></notes>
                 <depend id="4" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="4" name="API PDF" color="#8cb6ce" meeting="false" start="2016-02-29" duration="2" complete="0" expand="true">
-                <depend id="5" type="2" difference="0" hardness="Strong"/>
+            <task id="4" name="API PDF" color="#33cc00" meeting="false" start="2016-02-26" duration="1" complete="100" expand="true">
+                <notes><![CDATA[OK API PDF http://www.html2pdfrocket.com
+mini test OK]]></notes>
             </task>
-            <task id="5" name="API Google Mail" color="#8cb6ce" meeting="false" start="2016-03-05" duration="2" complete="0" expand="true"/>
+            <task id="5" name="API Google Mail" color="#006699" meeting="false" start="2016-02-26" duration="5" complete="30" expand="true">
+                <notes><![CDATA[voir utilisation de swiftmailer]]></notes>
+            </task>
+            <task id="44" name="API Stripe" color="#ff6666" meeting="false" start="2016-02-28" duration="4" complete="20" expand="true">
+                <notes><![CDATA[https://stripe.com/docs/api#intro]]></notes>
+                <depend id="7" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="48" name="API Paypal" color="#ff6666" meeting="false" start="2016-02-28" duration="4" complete="10" expand="true">
+                <notes><![CDATA[cf cours openclassroom]]></notes>
+                <depend id="7" type="2" difference="0" hardness="Strong"/>
+            </task>
         </task>
         <task id="6" name="Conception IHM Angular" color="#8cb6ce" meeting="false" project="true" start="2016-03-18" duration="5" complete="0" expand="true">
             <depend id="8" type="2" difference="0" hardness="Strong"/>
