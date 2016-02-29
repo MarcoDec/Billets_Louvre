@@ -60,3 +60,6 @@ http://www.html2pdfrocket.com
     http://api.html2pdfrocket.com/pdf?apikey=<API KEY>&value=Toto
     -> Element retourné = fichier PDF.
 *********************************************************************************************************
+API Captcha
+https://2captcha.com/api-2captcha
+---------------------------------------------------------------------------------------------------------
