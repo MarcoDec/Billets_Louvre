@@ -18,4 +18,11 @@ class DefaultController extends Controller
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
         ));
     }
+    
+    /**
+    * @Route("/calendar", name="myCalendar")
+    */
+    public function calendarAction() {
+        return $this->render('default/calendar.html.twig', array('test' => 'test'));
+    }
 }
