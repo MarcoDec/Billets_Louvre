@@ -11,3 +11,4 @@ This project integrates the following bundle :
 This project integrates the following php-API :
 - stripe : for Blue Card payment
 
+http://localhost/billets_louvre/Billets_Louvre/API_Louvre/web/
