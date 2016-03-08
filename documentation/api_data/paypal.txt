@@ -1,0 +1,16 @@
+FOR APP TESTING:
+If you require an AppID for development and testing purposes, please use our sandbox environment: https://www.sandbox.paypal.com
+ with 
+test AppID: APP-80W284485P519543T
+Please note that live credentials for testing purposes will not be approved.
+
+SANDBOX API CREDENTIALS
+    account:    marc.declercq-facilitator@laposte.net
+    Client ID:  AcPk_HdmlBEKqM23dyL0SIf2DZfVB0m6pi5GvZ97t8aaRzdCxE3TwLCZQhzDHr_UlDId7RJalC2exp3K
+    Secret :    EBfAvI5y_kTH_RUVKvRWZOFoEwQcc808QIQ2O8lVj-L_3RuYs8XO0LXltYFwrx2Ey8VSkqKLiMmwIq4L
+   
+URL test:   https://api.sandbox.paypal.com
+URL Live:   https://api.paypal.com
+
+curl -v https://api.sandbox.paypal.com/v1/oauth2/token -H "Accept: application/json" -H "Accept-Language: en_US" -u "AcPk_HdmlBEKqM23dyL0SIf2DZfVB0m6pi5GvZ97t8aaRzdCxE3TwLCZQhzDHr_UlDId7RJalC2exp3K:EBfAvI5y_kTH_RUVKvRWZOFoEwQcc808QIQ2O8lVj-L_3RuYs8XO0LXltYFwrx2Ey8VSkqKLiMmwIq4L" -d "grant_type=client_credentials"
+
