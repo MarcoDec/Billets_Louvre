@@ -33,10 +33,5 @@ monolog:
 
 #swiftmailer:
 #    delivery_address: me@example.com
-jms_payment_paypal:
-    username: marc.declercq-facilitator@laposte.net
-    password: AcPk_HdmlBEKqM23dyL0SIf2DZfVB0m6pi5GvZ97t8aaRzdCxE3TwLCZQhzDHr_UlDId7RJalC2exp3K
-    signature: EBfAvI5y_kTH_RUVKvRWZOFoEwQcc808QIQ2O8lVj-L_3RuYs8XO0LXltYFwrx2Ey8VSkqKLiMmwIq4L
-    debug: true
 
     

@@ -24,8 +24,12 @@
         "google/apiclient": "1.*",
         "adesigns/calendar-bundle": "^1.1",
         "friendsofsymfony/jsrouting-bundle": "^1.6",
-        "jms/payment-core-bundle": "master-dev",
-        "jms/payment-paypal-bundle": "master-dev",
+        "jms/payment-core-bundle": "dev-master",
+        "jms/payment-paypal-bundle": "*",
+        "jms/security-extra-bundle": "1.6.*",
+        "jms/di-extra-bundle": "1.7.*",
+        "jms/aop-bundle": "1.2.*",
+        "jms/cg": "^1.1",
         "coresphere/console-bundle": "dev-master"
     },
     "require-dev": {
