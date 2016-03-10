@@ -66,4 +66,6 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
 
+jms_payment_core:
+    secret: "%secret%"
     
