@@ -22,7 +22,8 @@ class AppKernel extends Kernel
             new ADesigns\CalendarBundle\ADesignsCalendarBundle(),
             new JMS\Payment\CoreBundle\JMSPaymentCoreBundle(),
             new JMS\Payment\PaypalBundle\JMSPaymentPaypalBundle(),
-            new AppBundle\AppBundle()
+            new AppBundle\AppBundle(),
+            new OC\CommandeBundle\OCCommandeBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

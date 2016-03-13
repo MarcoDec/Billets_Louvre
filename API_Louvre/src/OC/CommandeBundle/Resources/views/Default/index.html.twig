@@ -1,0 +1,11 @@
+
+{% block body %}
+This is the Commande Form
+    <div class="container">
+        <form action="{{ path('paiement', {'id': id } ) }}" method="post">
+            {{ form_widget(form) }}
+            <input type="submit"/>
+        </form>
+    
+    </div>
+{% endblock %}
