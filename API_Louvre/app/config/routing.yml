@@ -2,6 +2,10 @@ md_planning:
     resource: "@MDPlanningBundle/Controller/"
     type:     annotation
     prefix:   /planning/
+oc_commande:
+    resource: "@OCCommandeBundle/Controller/"
+    type:     annotation
+    prefix:   /commande
 
 app:
     resource: "@AppBundle/Controller/"

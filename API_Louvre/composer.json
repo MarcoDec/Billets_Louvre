@@ -23,12 +23,20 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "google/apiclient": "1.*",
         "adesigns/calendar-bundle": "^1.1",
-        "friendsofsymfony/jsrouting-bundle": "^1.6"
+        "friendsofsymfony/jsrouting-bundle": "^1.6",
+        "jms/payment-core-bundle": "dev-master",
+        "jms/payment-paypal-bundle": "*",
+        "jms/security-extra-bundle": "1.6.*",
+        "jms/di-extra-bundle": "1.7.*",
+        "jms/aop-bundle": "1.2.*",
+        "jms/cg": "^1.1",
+        "coresphere/console-bundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0",
         "symfony/phpunit-bridge": "~2.7",
-        "doctrine/doctrine-fixtures-bundle": "^2.3"
+        "doctrine/doctrine-fixtures-bundle": "^2.3",
+        "doctrine/data-fixtures": "master-dev"
     },
     "scripts": {
         "post-install-cmd": [
@@ -51,7 +59,7 @@
     "config": {
         "bin-dir": "bin",
         "platform": {
-            "php": "5.3.9"
+            "php": "5.5"
         }
     },
     "extra": {
