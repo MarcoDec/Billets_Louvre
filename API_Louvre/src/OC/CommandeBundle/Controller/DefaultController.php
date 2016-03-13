@@ -4,7 +4,12 @@ namespace OC\CommandeBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use JMS\DiExtraBundle\Annotation as DI;
+use OC\CommandeBundle\Entity\CommandeGlobale;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use JMS\Payment\CoreBundle\PluginController\Result;
+    
 class DefaultController extends Controller
 {
     /** @DI\Inject */
@@ -21,10 +26,15 @@ class DefaultController extends Controller
     
     /**
      * @Route("/{id}", name="paiement")
-     * @Template()
+     * @Template
      */
     public function paymentAction($id=0) //id of the order
     { 
+        $commandeGlobaleRepository= $this->em->getRepository('OCCommandeBundle:CommandeGlobale');
+        
+        //$commandeGlobale=$commandeGlobaleRepository->find($id);
+        $commandeGlobale = new CommandeGlobale();
+        
         $form = $this->getFormFactory()->create('jms_choose_payment_method', null, array(
             'amount'   => $commandeGlobale->getPrice(),
             'currency' => 'EUR',
@@ -33,7 +43,7 @@ class DefaultController extends Controller
         ));
  
         if ('POST' === $this->request->getMethod()) {
-            $form->bindRequest($this->request);
+            $form->handleRequest($this->request);
             $commandeGlobale = new CommandeGlobale();
             $this->em->persist( $commandeGlobale);
             $this->em->flush( $commandeGlobale);
@@ -54,7 +64,7 @@ class DefaultController extends Controller
                 ),
             ));
  
-            $form->bindRequest($this->request);
+            $form->handleRequest($this->request);
  
     // Once the Form is validate, you update the order with payment instruction
             if ($form->isValid()) {

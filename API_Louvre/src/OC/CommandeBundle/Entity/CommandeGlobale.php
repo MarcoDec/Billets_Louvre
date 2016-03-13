@@ -64,6 +64,15 @@ class CommandeGlobale
     private $paymentInstruction;
     
     
+    public function __construct() {
+        $this->dateReservation = new \Datetime();
+        $this->demiJournee = false;
+        $this->nbBillets = 1;
+        $this->email_acheteur = "yourEmail@provider.com";
+        $this->date_commande=new \Datetime();
+    }
+    
+    
     /**
      * Get id
      *
@@ -216,5 +225,9 @@ class CommandeGlobale
     public function getPaymentInstruction()
     {
         return $this->paymentInstruction;
+    }
+    
+    public function getPrice() {
+        return '100.50';
     }
 }
