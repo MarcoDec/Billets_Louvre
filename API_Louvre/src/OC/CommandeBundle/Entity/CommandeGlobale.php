@@ -4,6 +4,7 @@ namespace OC\CommandeBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Payment\CoreBundle\Entity\PaymentInstruction;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * CommandeGlobale
@@ -26,13 +27,16 @@ class CommandeGlobale
      * @var \DateTime
      *
      * @ORM\Column(name="date_reservation", type="date")
+     * @Assert\Range(
+     *          min="now",
+     *          max="+6 months")
      */
     private $dateReservation;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="demi_journee", type="boolean")
+     * @ORM\Column(name="demi_journee", type="boolean", nullable=true)
      */
     private $demiJournee;
 
@@ -40,14 +44,17 @@ class CommandeGlobale
      * @var int
      *
      * @ORM\Column(name="nb_billets", type="integer")
+     * @Assert\Range(
+     *          min="1",
+     *          max="50")
      */
     private $nbBillets;
-
 
     /**
     * @var string
     *
     * @ORM\Column(name="email_acheteur", type="string", length=255)
+    * 
     */
     private $email_acheteur;
     
@@ -63,13 +70,19 @@ class CommandeGlobale
     */
     private $paymentInstruction;
     
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sessionId", type="string", length=255)
+     */
+    private $sessionId;
     
     public function __construct() {
         $this->dateReservation = new \Datetime();
         $this->demiJournee = false;
         $this->nbBillets = 1;
-        $this->email_acheteur = "yourEmail@provider.com";
-        $this->date_commande=new \Datetime();
+        $this->email_acheteur = "youremail@toto.com";
+        $this->date_commande = new \Datetime();
     }
     
     
@@ -229,5 +242,29 @@ class CommandeGlobale
     
     public function getPrice() {
         return '100.50';
+    }
+
+    /**
+     * Set sessionId
+     *
+     * @param string $sessionId
+     *
+     * @return CommandeGlobale
+     */
+    public function setSessionId($sessionId)
+    {
+        $this->sessionId = $sessionId;
+
+        return $this;
+    }
+
+    /**
+     * Get sessionId
+     *
+     * @return string
+     */
+    public function getSessionId()
+    {
+        return $this->sessionId;
     }
 }

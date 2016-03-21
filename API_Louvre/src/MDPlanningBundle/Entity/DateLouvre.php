@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class DateLouvre
 {
-    private static final $MAX_BILLETS=1000;
     /**
      * @var int
      *
@@ -52,7 +51,7 @@ class DateLouvre
     
     public function book($nbBillets) {
         $total = $this->nbBillets+$nbBillets;
-        if ($total >= DateLouvre:MAX_BILLETS) {
+        if ($total >= 1000) {
             return false;
         } else {
             $this->nbBillets=$total;

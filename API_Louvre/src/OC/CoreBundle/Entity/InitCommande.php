@@ -244,4 +244,28 @@ class CommandeGlobale
     public function getPrice() {
         return '100.50';
     }
+
+    /**
+     * Set sessionId
+     *
+     * @param string $sessionId
+     *
+     * @return CommandeGlobale
+     */
+    public function setSessionId($sessionId)
+    {
+        $this->sessionId = $sessionId;
+
+        return $this;
+    }
+
+    /**
+     * Get sessionId
+     *
+     * @return string
+     */
+    public function getSessionId()
+    {
+        return $this->sessionId;
+    }
 }

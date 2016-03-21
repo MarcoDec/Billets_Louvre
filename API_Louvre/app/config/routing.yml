@@ -1,15 +1,12 @@
-md_planning:
-    resource: "@MDPlanningBundle/Controller/"
+oc_core:
+    resource: "@OCCoreBundle/Controller/"
     type:     annotation
-    prefix:   /planning/
+    prefix:   /
+
 oc_commande:
     resource: "@OCCommandeBundle/Controller/"
     type:     annotation
     prefix:   /commande
-
-app:
-    resource: "@AppBundle/Controller/"
-    type:     annotation
 
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"

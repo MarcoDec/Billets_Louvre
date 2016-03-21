@@ -25,6 +25,7 @@ class AppKernel extends Kernel
             new AppBundle\AppBundle(),
             new MDPlanningBundle\MDPlanningBundle(),
             new OC\CommandeBundle\OCCommandeBundle(),
+            new OC\CoreBundle\OCCoreBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

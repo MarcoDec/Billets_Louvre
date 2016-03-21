@@ -41,7 +41,11 @@ class Commande
      * @ORM\Column(name="client_birtday", type="date")
      */
     private $clientBirtday;
-
+    
+    /**
+    *
+    */
+    private $tarif;
     
     /**
     *
@@ -49,7 +53,6 @@ class Commande
     * @ORM\JoinColumn(nullable=false)
     */
     private $commandeGlobale;
-    
 
     /**
      * Get id
