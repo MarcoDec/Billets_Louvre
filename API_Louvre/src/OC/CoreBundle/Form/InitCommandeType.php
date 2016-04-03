@@ -18,7 +18,7 @@ class InitCommandeType extends AbstractType
             ->add('theDate', 'datetime')
             ->add('nbBillets', 'integer')
             ->add('demiJournee')
-            ->add('Reserver', 'submit', array('label' => 'Réserver'));
+            ->add('Reserver', 'submit', array('label' => 'Acheter'));
         ;
     }
     

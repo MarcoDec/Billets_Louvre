@@ -49,7 +49,7 @@ class Commande
     
     /**
     *
-    * @ORM\ManyToOne(targetEntity="OC\CommandeBundle\Entity\CommandeGlobale")
+    * @ORM\ManyToOne(targetEntity="OC\CommandeBundle\Entity\CommandeGlobale", inversedBy="commandes")
     * @ORM\JoinColumn(nullable=false)
     */
     private $commandeGlobale;

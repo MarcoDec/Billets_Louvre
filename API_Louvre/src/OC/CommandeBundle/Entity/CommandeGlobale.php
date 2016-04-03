@@ -77,6 +77,12 @@ class CommandeGlobale
      */
     private $sessionId;
     
+    /**
+    * @ORM\OneToMany(targetEntity="OC\CommandeBundle\Entity\Commande", mappedBy="commandeGlobale")
+    */
+    private $commandes;
+    
+    
     public function __construct() {
         $this->dateReservation = new \Datetime();
         $this->demiJournee = false;

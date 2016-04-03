@@ -34,7 +34,7 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="0" name="Analyses de faisabilité technique" color="#000000" meeting="false" start="2016-02-22" duration="7" complete="72" expand="true">
+        <task id="0" name="Analyses de faisabilité technique" color="#000000" meeting="false" start="2016-02-22" duration="7" complete="81" expand="false">
             <depend id="7" type="2" difference="0" hardness="Strong"/>
             <task id="2" name="API Calendrier Google" color="#33cc00" meeting="false" start="2016-02-26" duration="4" complete="100" expand="true">
                 <notes><![CDATA[Ok pour lire les évènements
@@ -61,7 +61,7 @@ mini test OK]]></notes>
                 <notes><![CDATA[https://stripe.com/docs/api#intro]]></notes>
                 <depend id="7" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="48" name="API Paypal" color="#ffff33" meeting="false" start="2016-02-28" duration="4" complete="50" expand="true">
+            <task id="48" name="API Paypal" color="#ffff33" meeting="false" start="2016-02-28" duration="4" complete="90" expand="true">
                 <notes><![CDATA[cf cours openclassroom
 Installationn Bundle Gestion PayPal
 Pas encore fonctionnel]]></notes>
@@ -84,12 +84,12 @@ Pas encore fonctionnel]]></notes>
             </task>
             <task id="18" name="Réalisation des tests unitaires" color="#8cb6ce" meeting="false" start="2016-03-25" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="7" name="Conception Serveur-Symfony" color="#8cb6ce" meeting="false" start="2016-03-07" duration="5" complete="0" expand="true">
+        <task id="7" name="Conception Serveur-Symfony" color="#8cb6ce" meeting="false" start="2016-03-07" duration="5" complete="20" expand="true">
             <depend id="6" type="2" difference="0" hardness="Strong"/>
-            <task id="29" name="Création des  Objets" color="#8cb6ce" meeting="false" start="2016-03-07" duration="1" complete="0" expand="true">
+            <task id="29" name="Création des  Objets" color="#8cb6ce" meeting="false" start="2016-03-07" duration="1" complete="50" expand="true">
                 <depend id="36" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="36" name="Création des Controlleurs" meeting="false" start="2016-03-11" duration="1" complete="0" expand="true">
+            <task id="36" name="Création des Controlleurs" color="#8cb6ce" meeting="false" start="2016-03-11" duration="1" complete="50" expand="true">
                 <depend id="37" type="2" difference="0" hardness="Strong"/>
             </task>
             <task id="37" name="Création des twig-Json" meeting="false" start="2016-03-12" duration="1" complete="0" expand="true">

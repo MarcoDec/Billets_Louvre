@@ -25,6 +25,25 @@ class DefaultController extends Controller
         $initCommande->setSessionId($request->getSession()->getId());
         
         if ($form->handleRequest($request)->isValid()) {
+            $tarifs=Tarif::getTarifs();
+            $tarifs_commandes= array();
+            
+            $nbTarifs=0;
+            $cnt=0;
+            
+            foreach ($tarifs as $key => $un_tarif) {
+                $nb=intval($request->request->get($key.'_nb'));
+                $tarifs_commandes[]=$nb;
+                $nbTarifs+= $nb;
+            }
+            echo 'nbTarifs = '+$nbTarifs;
+            
+            $initCommande->setNbBillets($nbTarifs);
+            //Avant de persister il faut récupérer le détail de la commande (nombre de billet-tarif) 
+            //sachant de la date est déjà prise en compte ainsi que l'option demi-journée
+            
+            
+            
             $em=$this->getDoctrine()->getManager();
             $em->persist($initCommande);
             $em->flush();
