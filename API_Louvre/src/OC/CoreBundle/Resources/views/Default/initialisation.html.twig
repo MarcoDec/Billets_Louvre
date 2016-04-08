@@ -1,6 +1,16 @@
 {% extends '::base.html.twig' %}
 {% block title %}Welcome in Le Louvre{% endblock %}
 
+{% set prototype_commande = form.commandes.vars.prototype %}
+
+{% macro information_prototype(commande) %}
+    {{ form_widget(commande.tarif) }}
+{% endmacro %}
+
+{% macro information2_prototype(commande) %}
+    {{ form_widget(commande.quantity) }}
+{% endmacro %}
+
 {% block stylesheets %}
     {{ parent() }}
     {#<link rel="stylesheet" href="{{ asset('bundles/adesignscalendar/css/fullcalendar/fullcalendar.css') }}" />
@@ -66,7 +76,7 @@
                                 {{ form_start(form, {'method': 'POST'}) }}
                                     <div class="col-xs-12 lowPadding">
                                     <legend><span class="glyphicon glyphicon-shopping-cart"></span> VOTRE COMMANDE</legend>
-                                    <div hidden>Erreurs : {{ form_errors(form) }} </div>  
+                                    <div class="col-xs-12 lowPadding" hidden>Erreurs : {{ form_errors(form) }} </div>  
                                     </div>
                                         <div class="col-xs-6 lowPadding" style="height: 75px;">
                                             {{ form_row(form.dateReservation, {'class':'form-control'}) }}
@@ -88,15 +98,37 @@
                                             </tr>
                                         </thead>
                                         <tbody id="tableau">
-                                                {% for key, tarif in tarifs %}
+                                            {% for commande in form.commandes %}
+                                                <tr hidden id="{{ commande.vars.value.tarif.getTarifKey }}" prix="{{ commande.vars.value.tarif.getCout }}" nbBillets="{{ commande.vars.value.tarif.nbBillets }}" amount="0" place='0'>
+                                                    
+                                                    {#<td>{{ _self.information_prototype(commande) }}</td>#}
+                                                    <td>{{ form_widget(commande.tarif) }}</td>
+
+                                                    <td>{{ commande.vars.value.tarif.getCout }}<span class="glyphicon glyphicon-euro"></span></td>
+
+                                                    <td>{{ form_widget(commande.quantity) }}</td>       
+
+                                                    <td class="sous-total" id="{{ commande.vars.value.tarif.getTarifKey }}_st">  <span class="glyphicon glyphicon-euro"></span></td>
+                                                    <td><place id="{{ commande.vars.value.tarif.getTarifKey }}_pl"></place></td>
+                                                </tr>
+                                            {% endfor %}
+                                                
+                                                {#{% for key, tarif in tarifs %}
                                                     <tr hidden id="{{ key }}" prix="{{ tarif.prix }}" nbBillets="{{ tarif.nbBillets }}" amount="0" place='0'>
-                                                        <td>{{ key|upper }}</td>
+                                                        {#<td>{{ key|upper }}</td>
+                                                                <td>
+                                                                            <input type="text" id="oc_commandebundle_CommandeGlobale_commandes_{{ loop.index0 }}_tarif" name="oc_commandebundle_CommandeGlobale[commandes][{{ loop.index0 }}][tarif]" required="required" value="{{ key|upper }}" disabled/>
+                                                                </td>
+                                                        
                                                         <td>{{ tarif.prix }}<span class="glyphicon glyphicon-euro"></span></td>
-                                                        <td><input name="oc_commandebundle_CommandeGlobale[nbBillets]" type="number" width="10px" style="text-align:center;color:black;" min="0" id="{{ key }}_nb" disabled/></td>
+                                                        
+                                                        {#<td><input name="oc_commandebundle_CommandeGlobale[nbBillets]" type="number" width="10px" style="text-align:center;color:black;" min="0" id="{{ key }}_nb" disabled/></td>
+                                                        <td><input id="oc_commandebundle_CommandeGlobale_commandes_{{ loop.index0 }}_quantity" type="number" width="10px" style="text-align:center;color:black;" min="0" name="oc_commandebundle_CommandeGlobale[commandes][{{ loop.index0 }}][quantity]" required value="0" disabled/></td>       
+                                                        
                                                         <td class="sous-total" id="{{ key }}_st">  <span class="glyphicon glyphicon-euro"></span></td>
                                                         <td><place id="{{ key }}_pl"></place></td>
                                                     </tr>
-                                                {% endfor %}
+                                                {% endfor %}#}
                                         </tbody>
                                         <tfoot>
                                                 <tr>
@@ -107,9 +139,20 @@
                                         </tfoot>
 
                                     </table>
+                                            
+
+                                        </div>
+                                            
                                         {{ form_row(form.Reserver, {'class':'form-control'}) }}
+
                                 </div>
+                                
                             {{ form_end(form) }}
+                  
+                           {# {{ form(form) }}#}
+                         
+                                
+                                
                 </section>
                 <!--<section class="col-lg-8 col-sm-12" id="calendar">
                     {#{% include 'ADesignsCalendarBundle::calendar.html.twig' %}#}

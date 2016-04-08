@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Billet du Louvre" company="MD" webLink="" view-date="2016-02-20" view-index="0" gantt-divider-location="374" resource-divider-location="300" version="2.7.2" locale="fr">
+<?xml version="1.0" encoding="UTF-8"?><project name="Billet du Louvre" company="MD" webLink="" view-date="2016-03-14" view-index="0" gantt-divider-location="374" resource-divider-location="300" version="2.7.2" locale="fr">
     <description><![CDATA[Ceci représente le planning des activités liées à la conception de la solution répondant au cdc du Louvre]]></description>
-    <view zooming-state="default:0" id="gantt-chart">
+    <view zooming-state="default:5" id="gantt-chart">
         <field id="tpd3" name="Nom" width="55" order="0"/>
         <field id="tpd4" name="Date de début" width="22" order="1"/>
         <field id="tpd5" name="Date de fin" width="22" order="2"/>
-        <option id="color.recent"><![CDATA[#ffff33 #33cc00 #ff6666 #00cc00 #006699 #ff9999 #ff0000]]></option>
+        <option id="color.recent"><![CDATA[#ffcc33 #999999 #ffff33 #33cc00 #ff6666 #00cc00 #006699 #ff9999 #ff0000]]></option>
     </view>
     <view id="resource-table">
         <field id="0" name="Nom" width="50" order="0"/>
@@ -68,39 +68,36 @@ Pas encore fonctionnel]]></notes>
                 <depend id="7" type="2" difference="0" hardness="Strong"/>
             </task>
         </task>
-        <task id="6" name="Conception IHM Angular" color="#8cb6ce" meeting="false" project="true" start="2016-03-18" duration="5" complete="0" expand="true">
+        <task id="6" name="Conception IHM Angular" color="#8cb6ce" meeting="false" start="2016-03-18" duration="5" complete="0" expand="false">
             <depend id="8" type="2" difference="0" hardness="Strong"/>
-            <task id="9" name="Création Objets" color="#8cb6ce" meeting="false" start="2016-03-18" duration="1" complete="0" expand="true">
+            <task id="9" name="Création Objets" color="#999999" meeting="false" start="2016-03-18" duration="1" complete="0" expand="true">
                 <depend id="12" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="12" name="Création des Controlleurs" meeting="false" start="2016-03-19" duration="1" complete="0" expand="true">
+            <task id="12" name="Création des Controlleurs" color="#999999" meeting="false" start="2016-03-19" duration="1" complete="0" expand="true">
                 <depend id="14" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="14" name="Création des vues" meeting="false" start="2016-03-20" duration="1" complete="0" expand="true">
+            <task id="14" name="Création des vues" color="#999999" meeting="false" start="2016-03-20" duration="1" complete="0" expand="true">
                 <depend id="16" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="16" name="Création des cas de test" meeting="false" start="2016-03-21" duration="1" complete="0" expand="true">
+            <task id="16" name="Création des cas de test" color="#999999" meeting="false" start="2016-03-21" duration="1" complete="0" expand="true">
                 <depend id="18" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="18" name="Réalisation des tests unitaires" color="#8cb6ce" meeting="false" start="2016-03-25" duration="1" complete="0" expand="true"/>
+            <task id="18" name="Réalisation des tests unitaires" color="#999999" meeting="false" start="2016-03-25" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="7" name="Conception Serveur-Symfony" color="#8cb6ce" meeting="false" start="2016-03-07" duration="5" complete="20" expand="true">
-            <depend id="6" type="2" difference="0" hardness="Strong"/>
-            <task id="29" name="Création des  Objets" color="#8cb6ce" meeting="false" start="2016-03-07" duration="1" complete="50" expand="true">
-                <depend id="36" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="36" name="Création des Controlleurs" color="#8cb6ce" meeting="false" start="2016-03-11" duration="1" complete="50" expand="true">
-                <depend id="37" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="37" name="Création des twig-Json" meeting="false" start="2016-03-12" duration="1" complete="0" expand="true">
+        <task id="8" name="Test API Angular-Symfony" color="#999999" meeting="false" start="2016-03-26" duration="2" complete="0" expand="true"/>
+        <task id="7" name="Conception Serveur-Symfony" color="#8cb6ce" meeting="false" start="2016-03-07" duration="27" complete="48" expand="true">
+            <task id="29" name="Création des  Objets" color="#ffcc33" meeting="false" start="2016-03-07" duration="22" complete="60" expand="true">
                 <depend id="38" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="38" name="Création des tests unitaires" meeting="false" start="2016-03-13" duration="1" complete="0" expand="true">
+            <task id="36" name="Création des Controlleurs" color="#ffcc33" meeting="false" start="2016-03-14" duration="18" complete="50" expand="true">
+                <depend id="38" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="37" name="Création des twig-Json" color="#999999" meeting="false" start="2016-04-16" duration="1" complete="0" expand="true"/>
+            <task id="38" name="Création des tests unitaires" color="#8cb6ce" meeting="false" start="2016-04-16" duration="2" complete="0" expand="true">
                 <depend id="39" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="39" name="Réalisation des tests unitaires" meeting="false" start="2016-03-14" duration="1" complete="0" expand="true"/>
+            <task id="39" name="Réalisation des tests unitaires" meeting="false" start="2016-04-18" duration="3" complete="0" expand="true"/>
         </task>
-        <task id="8" name="Test API Angular-Symfony" color="#8cb6ce" meeting="false" start="2016-03-26" duration="2" complete="0" expand="true"/>
     </tasks>
     <resources>
         <resource id="0" name="Marc" function="SoftwareDevelopment:2" contacts="marc.declercq@laposte.net" phone="">

@@ -41,15 +41,11 @@ class Commande
      * @ORM\Column(name="client_birtday", type="date")
      */
     private $clientBirtday;
-
     
     /**
     *
-    * @ORM\ManyToOne(targetEntity="OC\CommandeBundle\Entity\CommandeGlobale")
-    * @ORM\JoinColumn(nullable=false)
     */
-    private $commandeGlobale;
-    
+    private $tarif;
 
     /**
      * Get id
@@ -132,5 +128,5 @@ class Commande
     {
         return $this->clientBirtday;
     }
-}
 
+}

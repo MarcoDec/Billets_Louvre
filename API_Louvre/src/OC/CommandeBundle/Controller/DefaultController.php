@@ -45,8 +45,8 @@ class DefaultController extends Controller
         if ('POST' === $this->request->getMethod()) {
             $form->handleRequest($this->request);
             $commandeGlobale = new CommandeGlobale();
-            $this->em->persist( $commandeGlobale);
-            $this->em->flush( $commandeGlobale);
+            $this->em->persist($commandeGlobale);
+            $this->em->flush($commandeGlobale);
  
             $form = $this->getFormFactory()->create('jms_choose_payment_method', null, array(
                 'amount'   => $commandeGlobale->getPrice(),

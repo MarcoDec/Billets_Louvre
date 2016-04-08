@@ -28,7 +28,6 @@ class CommandeGlobale
      *
      * @ORM\Column(name="date_reservation", type="date")
      * @Assert\Range(
-     *          min="now",
      *          max="+6 months")
      */
     private $dateReservation;
@@ -45,19 +44,10 @@ class CommandeGlobale
      *
      * @ORM\Column(name="nb_billets", type="integer")
      * @Assert\Range(
-     *          min="1",
+     *          min="0",
      *          max="50")
      */
     private $nbBillets;
-
-
-    /**
-    * @var string
-    *
-    * @ORM\Column(name="email_acheteur", type="string", length=255)
-    * @Assert\Type(type="email")
-    */
-    private $email_acheteur;
     
     /**
     * @var date
@@ -78,11 +68,16 @@ class CommandeGlobale
      */
     private $sessionId;
     
+    /**
+    * @ORM\OneToMany(targetEntity="OC\CommandeBundle\Entity\CommandeTarif", mappedBy="commande_Globale")
+    */
+    private $commandes;
+    
+    
     public function __construct() {
         $this->dateReservation = new \Datetime();
         $this->demiJournee = false;
-        $this->nbBillets = 1;
-        $this->email_acheteur = "";
+        $this->nbBillets = 0;
         $this->date_commande = new \Datetime();
     }
     
@@ -243,5 +238,63 @@ class CommandeGlobale
     
     public function getPrice() {
         return '100.50';
+    }
+
+    /**
+     * Set sessionId
+     *
+     * @param string $sessionId
+     *
+     * @return CommandeGlobale
+     */
+    public function setSessionId($sessionId)
+    {
+        $this->sessionId = $sessionId;
+
+        return $this;
+    }
+
+    /**
+     * Get sessionId
+     *
+     * @return string
+     */
+    public function getSessionId()
+    {
+        return $this->sessionId;
+    }
+
+    /**
+     * Add commande
+     *
+     * @param \OC\CommandeBundle\Entity\Commande $commande
+     *
+     * @return CommandeGlobale
+     */
+    public function addCommande(\OC\CommandeBundle\Entity\Commande $commande)
+    {
+        $this->commandes[] = $commande;
+
+        return $this;
+    }
+
+    /**
+     * Remove commande
+     *
+     * @param \OC\CommandeBundle\Entity\Commande $commande
+     */
+    public function removeCommande(\OC\CommandeBundle\Entity\Commande $commande)
+    {
+        $this->commandes->removeElement($commande);
+    }
+
+    /**
+     * Get commandes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCommandes()
+    {
+        return $this->commandes;
     }
 }

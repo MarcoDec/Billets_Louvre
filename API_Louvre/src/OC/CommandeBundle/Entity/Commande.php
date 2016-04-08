@@ -46,13 +46,6 @@ class Commande
     *
     */
     private $tarif;
-    
-    /**
-    *
-    * @ORM\ManyToOne(targetEntity="OC\CommandeBundle\Entity\CommandeGlobale", inversedBy="commandes")
-    * @ORM\JoinColumn(nullable=false)
-    */
-    private $commandeGlobale;
 
     /**
      * Get id
@@ -136,27 +129,4 @@ class Commande
         return $this->clientBirtday;
     }
 
-    /**
-     * Set commandeGlobale
-     *
-     * @param \OC\CommandeBundle\Entity\CommandeGlobale $commandeGlobale
-     *
-     * @return Commande
-     */
-    public function setCommandeGlobale(\OC\CommandeBundle\Entity\CommandeGlobale $commandeGlobale)
-    {
-        $this->commandeGlobale = $commandeGlobale;
-
-        return $this;
-    }
-
-    /**
-     * Get commandeGlobale
-     *
-     * @return \OC\CommandeBundle\Entity\CommandeGlobale
-     */
-    public function getCommandeGlobale()
-    {
-        return $this->commandeGlobale;
-    }
 }
