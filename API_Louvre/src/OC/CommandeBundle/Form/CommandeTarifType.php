@@ -22,13 +22,16 @@ class CommandeTarifType extends AbstractType
         $builder
             ->add('quantity', IntegerType::class, array(
                 'label' => 'Quantité',
-                'disabled' => true
+                'disabled' => false,
+                'attr' => array('min'=>'0', 'max'=> '10')
             ))
             ->add('tarif', EntityType::class, array(
                 'class' => 'OCCommandeBundle:Tarif',
                 'choice_label' => 'tarif_key',
-                'disabled' => true,
-                'attr' => array('style'=>'width:100%;')
+                'disabled' => false,
+                'attr' => array('style'=>'width:100%;',
+                'expanded' => true,
+                'multiple' => false)
             ))
         ;
     }

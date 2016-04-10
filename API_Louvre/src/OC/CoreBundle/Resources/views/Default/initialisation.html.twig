@@ -154,6 +154,8 @@
                                 </div>
                             {{ form_end(form) }}
                 </section>
+                        
+                        
                 <!--<section class="col-lg-8 col-sm-12" id="calendar">
                     {#{% include 'ADesignsCalendarBundle::calendar.html.twig' %}#}
                 </section>-->
@@ -165,6 +167,14 @@
                             <input type='text' id='refCommande' name='refCommande' class="form-control">
                                 <input type='submit' value='Annuler Billet(s)'>
                         </form>-->
+                        {{ form_start(form2, {'method': 'POST'}) }}
+                            {{ form_row(form2.dateReservation) }}<br>
+                            {{ form_row(form2.demiJournee) }}<br>
+                            {{ form_row(form2.nbBillets) }}<br>
+                        
+                        
+                            {{ form_row(form2.commandes) }}<br>
+                        {{ form_end(form2) }}
             </div>
                 </div>
             </div>

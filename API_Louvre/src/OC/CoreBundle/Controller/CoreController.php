@@ -64,7 +64,7 @@ class CoreController extends Controller
 
         // On initialise le formulaire 
         $form=$this->get('form.factory')->create(new CommandeGlobaleType(), $commandeGlobale_session);
-        
+        $form2=$this->get('form.factory')->create(new CommandeGlobaleType(), $commandeGlobale_session);
         
         
         if ($request->isMethod('POST')) {
@@ -113,7 +113,8 @@ class CoreController extends Controller
                              array(
                                  'form'=>$form->createView(),
                                  'tarifs'=>$list_tarifs,
-                                 'commandeGlobale'=>$commandeGlobale_session
+                                 'commandeGlobale'=>$commandeGlobale_session,
+                                 'form2'=>$form2->createView()
                              )
                             );
     }
