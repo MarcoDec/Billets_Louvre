@@ -69,7 +69,7 @@ class CoreController extends Controller
         
         if ($request->isMethod('POST')) {
             $logger->info('C\'est une requête POST');
-            print_r($request);
+            //print_r($request);
             $form->handleRequest($request); // Récupération des données de la requête
             $logger->info('Le tableau qui contient maintenant '.(count($commandeGlobale_session->getCommandes())).' commande(s)');
             $valBillet = $request->request->get('oc_commandebundle_CommandeGlobale_nbBillets');
