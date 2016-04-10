@@ -48,7 +48,11 @@ class Tarif
      * @ORM\Column(name="cout", type="decimal", precision=10, scale=0)
      */
     private $cout;
-
+    
+    public function __construct($key='new tarif') {
+        $this->tarif_key=$key;
+    }
+    
     public static final function getTarifs() {
         return array(
             'Normal' => array(

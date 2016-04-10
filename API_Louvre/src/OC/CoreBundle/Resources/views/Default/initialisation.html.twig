@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 {% block title %}Welcome in Le Louvre{% endblock %}
-
+{#
 {% set prototype_commande = form.commandes.vars.prototype %}
 
 {% macro information_prototype(commande) %}
@@ -9,7 +9,7 @@
 
 {% macro information2_prototype(commande) %}
     {{ form_widget(commande.quantity) }}
-{% endmacro %}
+{% endmacro %}#}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -31,10 +31,11 @@
                         <aside class="col-xm-12 col-md-5">
                             <div class="row">
                                 {% for key, tarif in tarifs %}
+                                        {# On Récupère si besoin les valeurs des quantités déjà réservées #}
                                     <div class='col-xs-6 col-sm-4 col-lg-3 lowPadding'>
                                         <article>
                                             <!-- Tarif -->
-                                            <tarif class="col-xs-12 lowPadding">Tarif {{key|upper}}</tarif>
+                                            <tarif class="col-xs-12 lowPadding">Tarif {{tarif.getTarifKey()|upper}}</tarif>
                                             <!-- Nombre de billet -->
                                             <div class="col-xs-7 lowPadding">
                                                 {% if tarif.nbBillets > 1 %}
@@ -45,7 +46,7 @@
                                             </div>
                                             <!-- Prix des billets -->
                                             <div class="col-xs-5 lowPadding">
-                                                <prix>{{ tarif.prix }}<span class="glyphicon glyphicon-euro"></span></prix>
+                                                <prix>{{ tarif.cout }}<span class="glyphicon glyphicon-euro"></span></prix>
                                             </div>
                                             <!-- Description -->
                                             <div class="{#hidden-xs hidden-sm #}col-md-12 lowPadding">
@@ -56,15 +57,23 @@
                                                 <tete><span class="glyphicon glyphicon-user"></span></tete>
                                             </div>
                                             <div class="col-xs-6 lowPadding">
-                                                <people  key="{{ key }}">0</people>
+                                                {% set test = false %}
+                                                {% set nombre_entree = 0 %}
+                                                {% for commande in commandeGlobale.getCommandes() if test == false %}
+                                                        {% if commande.tarif.description == tarif.description %}
+                                                                {% set test = true %}
+                                                                {% set nombre_entree = commande.quantity*tarif.nbBillets %}
+                                                        {% endif %}
+                                                {% endfor %}
+                                                <people  key="{{ tarif.getTarifKey() }}">{{nombre_entree}}</people> 
                                             </div>
                                             <!-- bouton de commande d'ajout d'un tarif -->
                                             <div class="col-xs-2 lowPadding">
-                                                <plus name="plus" key="{{ key }}" prix="{{ tarif.prix }}" nBillets="{{ tarif.nbBillets }}"><span class="glyphicon glyphicon-plus-sign"></span></plus>
+                                                <plus name="plus" key="{{ tarif.getTarifKey() }}" prix="{{ tarif.cout }}" nBillets="{{ tarif.nbBillets }}"><span class="glyphicon glyphicon-plus-sign"></span></plus>
                                             </div>
                                             <!-- bouton de commande de retrait d'un tarif -->
                                             <div class="col-xs-2 lowPadding">
-                                                <moins name="moins" key="{{ key }}" prix="{{ tarif.prix }}" nBillets="{{ tarif.nbBillets }}"><span class="glyphicon glyphicon-minus-sign"></span></moins>
+                                                <moins name="moins" key="{{ tarif.getTarifKey() }}" prix="{{ tarif.cout }}" nBillets="{{ tarif.nbBillets }}"><span class="glyphicon glyphicon-minus-sign"></span></moins>
                                             </div>
                                         </article>
                                     </div>
@@ -86,6 +95,7 @@
                                             {{ form_row(form.demiJournee, {'class':'form-control'}) }}
                                             <p class="info">Toute réservation pour la 1/2 journée courantes doit être passée avant 14h00.</p>
                                         </div>
+                                        
                                     <div class="col-xs-12 lowPadding">
                                     <table>
                                         <thead>
@@ -97,62 +107,52 @@
                                                     <th width='10%'>Nb de place</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="tableau">
+                                        <tbody id="oc_commandebundle_CommandeGlobale_commandes" name='oc_commandebundle_CommandeGlobale[commandes]' data-prototype='<div><label class="required">__name__label__</label><div id="oc_commandebundle_CommandeGlobale_commandes___name__"><div><label for="oc_commandebundle_CommandeGlobale_commandes___name___quantity" class="required">Quantité</label><input type="number" id="oc_commandebundle_CommandeGlobale_commandes___name___quantity" name="oc_commandebundle_CommandeGlobale[commandes][__name__][quantity]" disabled="disabled" required="required" /></div><div><label for="oc_commandebundle_CommandeGlobale_commandes___name___tarif" class="required">Tarif</label><select id="oc_commandebundle_CommandeGlobale_commandes___name___tarif" name="oc_commandebundle_CommandeGlobale[commandes][__name__][tarif]" disabled="disabled" style="width:100%;">            <option value="1" >Normal</option>            <option value="2" >Senior</option>            <option value="3" >Enfant</option>            <option value="4" >Gratuit</option>            <option value="5" >Réduit</option>            <option value="6" >Famille</option></select></div></div></div>'>
+
                                             {% for commande in form.commandes %}
-                                                <tr hidden id="{{ commande.vars.value.tarif.getTarifKey }}" prix="{{ commande.vars.value.tarif.getCout }}" nbBillets="{{ commande.vars.value.tarif.nbBillets }}" amount="0" place='0'>
-                                                    
-                                                    {#<td>{{ _self.information_prototype(commande) }}</td>#}
+                                                {% set XX_Tarif_Key = commande.vars.value.tarif.getTarifKey %}
+                                                {% set XX_nBillets = commande.vars.value.tarif.nbBillets %}
+                                                {% set XX_Tarif_Cout = commande.vars.value.tarif.getCout %}
+                                                {% set XX_quantity = commande.vars.value.quantity %}
+                                                {% set XX_Commande_Cout = XX_Tarif_Cout * commande.vars.value.quantity %}
+                                                {% set XX_Commande_NbEntree = XX_nBillets * commande.vars.value.quantity %}         
+                                                <tr {% if XX_Commande_NbEntree == 0 %}
+                                                        hidden
+                                                    {% endif %}
+                                                    id="{{ XX_Tarif_Key }}" 
+                                                    prix="{{ XX_Tarif_Cout }}" 
+                                                    nbBillets="{{ XX_nBillets }}" 
+                                                    amount="{{ XX_Commande_Cout }}" 
+                                                    place='{{XX_Commande_NbEntree}}'>
+                                                {# NOM du tarif #}
                                                     <td>{{ form_widget(commande.tarif) }}</td>
-
-                                                    <td>{{ commande.vars.value.tarif.getCout }}<span class="glyphicon glyphicon-euro"></span></td>
-
-                                                    <td>{{ form_widget(commande.quantity) }}</td>       
-
-                                                    <td class="sous-total" id="{{ commande.vars.value.tarif.getTarifKey }}_st">  <span class="glyphicon glyphicon-euro"></span></td>
-                                                    <td><place id="{{ commande.vars.value.tarif.getTarifKey }}_pl"></place></td>
+                                                {# PRIX du tarif #}
+                                                    <td>{{ XX_Tarif_Cout }}<span class="glyphicon glyphicon-euro"></span></td>
+                                                {# QUANTITY #}
+                                                    <td>{{ form_widget(commande.quantity,
+                                                                {'attr': {'class': XX_Tarif_Key  }  }
+                                                            ) }}</td>       
+                                                {# COUT Total des billets à ce tarif#}
+                                                    <td class="sous-total" id="{{ XX_Tarif_Key }}_st">{{ XX_Commande_Cout }}  <span class="glyphicon glyphicon-euro"></span></td>
+                                                {# Nombre Total d'entrée #}       
+                                                    <td><place id="{{ XX_Tarif_Key }}_pl"> {{ XX_Commande_NbEntree }} </place></td>
                                                 </tr>
                                             {% endfor %}
-                                                
-                                                {#{% for key, tarif in tarifs %}
-                                                    <tr hidden id="{{ key }}" prix="{{ tarif.prix }}" nbBillets="{{ tarif.nbBillets }}" amount="0" place='0'>
-                                                        {#<td>{{ key|upper }}</td>
-                                                                <td>
-                                                                            <input type="text" id="oc_commandebundle_CommandeGlobale_commandes_{{ loop.index0 }}_tarif" name="oc_commandebundle_CommandeGlobale[commandes][{{ loop.index0 }}][tarif]" required="required" value="{{ key|upper }}" disabled/>
-                                                                </td>
-                                                        
-                                                        <td>{{ tarif.prix }}<span class="glyphicon glyphicon-euro"></span></td>
-                                                        
-                                                        {#<td><input name="oc_commandebundle_CommandeGlobale[nbBillets]" type="number" width="10px" style="text-align:center;color:black;" min="0" id="{{ key }}_nb" disabled/></td>
-                                                        <td><input id="oc_commandebundle_CommandeGlobale_commandes_{{ loop.index0 }}_quantity" type="number" width="10px" style="text-align:center;color:black;" min="0" name="oc_commandebundle_CommandeGlobale[commandes][{{ loop.index0 }}][quantity]" required value="0" disabled/></td>       
-                                                        
-                                                        <td class="sous-total" id="{{ key }}_st">  <span class="glyphicon glyphicon-euro"></span></td>
-                                                        <td><place id="{{ key }}_pl"></place></td>
-                                                    </tr>
-                                                {% endfor %}#}
                                         </tbody>
                                         <tfoot>
                                                 <tr>
                                                     <th colspan="3">TOTAL:</th>
                                                     <th id="total">0<span class="glyphicon glyphicon-euro"></span></th>
-                                                    <th id="places">0</th>
+                                                    <th id="places">{{  form_widget( form.nbBillets, {'attr': {'class' : 'total'}}) }}</th>
                                                 </tr>
                                         </tfoot>
 
                                     </table>
-                                            
-
                                         </div>
-                                            
                                         {{ form_row(form.Reserver, {'class':'form-control'}) }}
 
                                 </div>
-                                
                             {{ form_end(form) }}
-                  
-                           {# {{ form(form) }}#}
-                         
-                                
-                                
                 </section>
                 <!--<section class="col-lg-8 col-sm-12" id="calendar">
                     {#{% include 'ADesignsCalendarBundle::calendar.html.twig' %}#}

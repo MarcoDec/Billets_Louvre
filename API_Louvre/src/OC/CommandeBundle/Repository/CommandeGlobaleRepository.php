@@ -1,7 +1,7 @@
 <?php
 
 namespace OC\CommandeBundle\Repository;
-
+use Doctrine\ORM\QueryBuilder; 
 /**
  * CommandeGlobaleRepository
  *
@@ -10,4 +10,12 @@ namespace OC\CommandeBundle\Repository;
  */
 class CommandeGlobaleRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findBySessionId($sessionId) {
+        $qb = $this->createQueryBuilder('a');
+        $qb->where('a.sessionId = :sessionId')
+            ->setParameter('sessionId', $sessionId)
+            ->orderBy('a.date_commande','DESC');
+        return $qb->getQuery()->getResult();
+    }
+    
 }

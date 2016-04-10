@@ -47,6 +47,8 @@ class Commande
     */
     private $tarif;
 
+    
+    
     /**
      * Get id
      *

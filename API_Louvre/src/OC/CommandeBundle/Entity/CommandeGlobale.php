@@ -44,7 +44,7 @@ class CommandeGlobale
      *
      * @ORM\Column(name="nb_billets", type="integer")
      * @Assert\Range(
-     *          min="0",
+     *          min="1",
      *          max="50")
      */
     private $nbBillets;
@@ -52,7 +52,7 @@ class CommandeGlobale
     /**
     * @var date
     *
-    * @ORM\Column(name="date_commande", type="date")
+    * @ORM\Column(name="date_commande", type="datetime")
     */
     private $date_commande;
     
@@ -69,7 +69,7 @@ class CommandeGlobale
     private $sessionId;
     
     /**
-    * @ORM\OneToMany(targetEntity="OC\CommandeBundle\Entity\CommandeTarif", mappedBy="commande_Globale")
+    * @ORM\OneToMany(targetEntity="OC\CommandeBundle\Entity\CommandeTarif", mappedBy="commande_Globale", cascade={"persist"})
     */
     private $commandes;
     
@@ -236,10 +236,6 @@ class CommandeGlobale
     {
         return $this->paymentInstruction;
     }
-    
-    public function getPrice() {
-        return '100.50';
-    }
 
     /**
      * Set sessionId
@@ -304,5 +300,23 @@ class CommandeGlobale
     public function getCommandes()
     {
         return $this->commandes;
+    }
+    
+    public function getCommandeWithTarif($id_tarif) {
+        foreach ($this->commandes as $commande) {
+            if ($commande->getTarif()->getId() == $id_tarif) {
+                return $commande;
+            }
+        }
+        return null;
+    }
+    
+    public function hasTarif(\OC\CommandeBundle\Entity\Tarif $tarif) {
+        foreach ($this->commandes as $commande) {
+            if ($commande->getTarif()->getId() == $tarif->getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

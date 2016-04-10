@@ -21,39 +21,14 @@ class CommandeTarifType extends AbstractType
     {
         $builder
             ->add('quantity', IntegerType::class, array(
-                'label' => 'Quantité'
+                'label' => 'Quantité',
+                'disabled' => true
             ))
-            /*->add('tarif', ChoiceType::class, array(
-                'choices' => array(
-                        '0' => 'Tarif 0',
-                        '1' => 'Tarif 1',
-                        '2' => 'Tarif 2',
-                    ),
-                'multiple' => false,
-                'expanded' => false
-            )
-                 )*/
-            
-            /*->add('tarif', ChoiceType::class, [
-                'choices' => [
-                    new Tarif('Tarif 0'),
-                    new Tarif('Tarif 1'),
-                    new Tarif('Tarif 2'),
-                    new Tarif('Tarif 3')
-                ],
-                'choices_as_values' => true,
-                'choice_label' => function($tarif, $key, $index) {
-                    return strtoupper($tarif->getTarifKey());
-                },
-                'choice_attr' => function($tarif, $key, $index) {
-                    return ['class' => 'tarif_'.strtolower($tarif->getTarifKey())];
-                }
-            ]
-            
-            )*/
             ->add('tarif', EntityType::class, array(
                 'class' => 'OCCommandeBundle:Tarif',
                 'choice_label' => 'tarif_key',
+                'disabled' => true,
+                'attr' => array('style'=>'width:100%;')
             ))
         ;
     }
