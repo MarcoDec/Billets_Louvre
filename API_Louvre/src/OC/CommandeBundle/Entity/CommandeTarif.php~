@@ -43,6 +43,11 @@ class CommandeTarif
     private $tarif;
     
     /**
+    * @ORM\OneToMany(targetEntity="OC\CoreBundle\Entity\User", mappedBy="commandeTarif")
+    */
+    private $visiteurs;
+    
+    /**
      * Get id
      *
      * @return int
@@ -98,5 +103,29 @@ class CommandeTarif
     public function getCommandeGlobale()
     {
         return $this->commande_Globale;
+    }
+
+    /**
+     * Set tarif
+     *
+     * @param \OC\CommandeBundle\Entity\Tarif $tarif
+     *
+     * @return CommandeTarif
+     */
+    public function setTarif(\OC\CommandeBundle\Entity\Tarif $tarif)
+    {
+        $this->tarif = $tarif;
+
+        return $this;
+    }
+
+    /**
+     * Get tarif
+     *
+     * @return \OC\CommandeBundle\Entity\Tarif
+     */
+    public function getTarif()
+    {
+        return $this->tarif;
     }
 }

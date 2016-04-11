@@ -30,31 +30,31 @@ class CommandeGlobale
      * @Assert\Range(
      *          max="+6 months")
      */
-    private $dateReservation;
+    private $dateReservation;       // Rempli à l'étape 1
 
     /**
      * @var bool
      *
      * @ORM\Column(name="demi_journee", type="boolean", nullable=true)
      */
-    private $demiJournee;
+    private $demiJournee;           // Rempli à l'étape 1
 
     /**
      * @var int
      *
      * @ORM\Column(name="nb_billets", type="integer")
      * @Assert\Range(
-     *          min="0",
+     *          min="1",
      *          max="50")
      */
-    private $nbBillets;
+    private $nbBillets;             // Rempli à l'étape 1
     
     /**
     * @var date
     *
-    * @ORM\Column(name="date_commande", type="date")
+    * @ORM\Column(name="date_commande", type="datetime")
     */
-    private $date_commande;
+    private $date_commande;         // Rempli à l'étape 1
     
     /**
     * @ORM\OneToOne(targetEntity="JMS\Payment\CoreBundle\Entity\PaymentInstruction")
@@ -66,19 +66,24 @@ class CommandeGlobale
      *
      * @ORM\Column(name="sessionId", type="string", length=255)
      */
-    private $sessionId;
+    private $sessionId;             // Rempli à l'étape 1
     
     /**
-    * @ORM\OneToMany(targetEntity="OC\CommandeBundle\Entity\CommandeTarif", mappedBy="commande_Globale")
+    * @ORM\OneToMany(targetEntity="OC\CommandeBundle\Entity\CommandeTarif", mappedBy="commande_Globale", cascade={"persist"})
     */
-    private $commandes;
+    private $commandes;              // Rempli à l'étape 1
     
+    /**
+    * @ORM\ManyToOne(targetEntity="OC\CoreBundle\Entity\User")
+    */
+    private $client;
     
     public function __construct() {
         $this->dateReservation = new \Datetime();
         $this->demiJournee = false;
         $this->nbBillets = 0;
         $this->date_commande = new \Datetime();
+        $this->commandes=new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     
@@ -235,10 +240,6 @@ class CommandeGlobale
     {
         return $this->paymentInstruction;
     }
-    
-    public function getPrice() {
-        return '100.50';
-    }
 
     /**
      * Set sessionId
@@ -271,19 +272,26 @@ class CommandeGlobale
      *
      * @return CommandeGlobale
      */
-    public function addCommande(\OC\CommandeBundle\Entity\Commande $commande)
+    public function addCommande(\OC\CommandeBundle\Entity\CommandeTarif $commande)
     {
         $this->commandes[] = $commande;
 
         return $this;
     }
 
+    public function setCommandes(\Doctrine\Common\Collections\ArrayCollection $commandes) {
+        $this->commandes=$commandes;
+        foreach ($commandes as $commande) {
+            $commande->setCommandeGlobale($this);
+        }
+    }
+    
     /**
      * Remove commande
      *
      * @param \OC\CommandeBundle\Entity\Commande $commande
      */
-    public function removeCommande(\OC\CommandeBundle\Entity\Commande $commande)
+    public function removeCommande(\OC\CommandeBundle\Entity\CommandeTarif $commande)
     {
         $this->commandes->removeElement($commande);
     }
@@ -296,5 +304,23 @@ class CommandeGlobale
     public function getCommandes()
     {
         return $this->commandes;
+    }
+    
+    public function getCommandeWithTarif($id_tarif) {
+        foreach ($this->commandes as $commande) {
+            if ($commande->getTarif()->getId() == $id_tarif) {
+                return $commande;
+            }
+        }
+        return null;
+    }
+    
+    public function hasTarif(\OC\CommandeBundle\Entity\Tarif $tarif) {
+        foreach ($this->commandes as $commande) {
+            if ($commande->getTarif()->getId() == $tarif->getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

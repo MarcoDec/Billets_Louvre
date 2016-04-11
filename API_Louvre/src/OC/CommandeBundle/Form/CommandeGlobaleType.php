@@ -45,8 +45,7 @@ class CommandeGlobaleType extends AbstractType
                 'allow_delete' => false])
             ->add('nbBillets', IntegerType::class, array(
                 'label'=>'Total', 
-                'attr'=> array('style'=> 'width:100%;', 'min'=>'0'), 
-                'disabled' => false))
+                'attr'=> array('style'=> 'width:100%;', 'min'=>'0')))
             ->add('Reserver', SubmitType::class , array(
                 'label' => 'Cliquez ici pour Réserver', 
                 'attr' => array('style' => 'width:100%;')))

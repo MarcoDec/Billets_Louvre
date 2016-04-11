@@ -5,6 +5,7 @@ namespace OC\CommandeBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Payment\CoreBundle\Entity\PaymentInstruction;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * CommandeGlobale
@@ -30,14 +31,14 @@ class CommandeGlobale
      * @Assert\Range(
      *          max="+6 months")
      */
-    private $dateReservation;
+    private $dateReservation;       // Rempli à l'étape 1
 
     /**
      * @var bool
      *
      * @ORM\Column(name="demi_journee", type="boolean", nullable=true)
      */
-    private $demiJournee;
+    private $demiJournee;           // Rempli à l'étape 1
 
     /**
      * @var int
@@ -47,14 +48,14 @@ class CommandeGlobale
      *          min="1",
      *          max="50")
      */
-    private $nbBillets;
+    private $nbBillets;             // Rempli à l'étape 1
     
     /**
     * @var date
     *
     * @ORM\Column(name="date_commande", type="datetime")
     */
-    private $date_commande;
+    private $date_commande;         // Rempli à l'étape 1
     
     /**
     * @ORM\OneToOne(targetEntity="JMS\Payment\CoreBundle\Entity\PaymentInstruction")
@@ -66,20 +67,24 @@ class CommandeGlobale
      *
      * @ORM\Column(name="sessionId", type="string", length=255)
      */
-    private $sessionId;
+    private $sessionId;             // Rempli à l'étape 1
     
     /**
     * @ORM\OneToMany(targetEntity="OC\CommandeBundle\Entity\CommandeTarif", mappedBy="commande_Globale", cascade={"persist"})
     */
-    private $commandes;
+    private $commandes;              // Rempli à l'étape 1
     
+    /**
+    * @ORM\ManyToOne(targetEntity="OC\CoreBundle\Entity\User")
+    */
+    private $client;
     
     public function __construct() {
         $this->dateReservation = new \Datetime();
         $this->demiJournee = false;
         $this->nbBillets = 0;
         $this->date_commande = new \Datetime();
-        $this->commandes=new \Doctrine\Common\Collections\ArrayCollection();
+        $this->commandes=new ArrayCollection();
     }
     
     
@@ -275,7 +280,7 @@ class CommandeGlobale
         return $this;
     }
 
-    public function setCommandes(\Doctrine\Common\Collections\ArrayCollection $commandes) {
+    public function setCommandes(ArrayCollection $commandes) {
         $this->commandes=$commandes;
         foreach ($commandes as $commande) {
             $commande->setCommandeGlobale($this);
@@ -318,5 +323,29 @@ class CommandeGlobale
             }
         }
         return false;
+    }
+
+    /**
+     * Set client
+     *
+     * @param \OC\CoreBundle\Entity\User $client
+     *
+     * @return CommandeGlobale
+     */
+    public function setClient(\OC\CoreBundle\Entity\User $client = null)
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * Get client
+     *
+     * @return \OC\CoreBundle\Entity\User
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 }

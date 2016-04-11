@@ -3,6 +3,7 @@
 namespace OC\CommandeBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * CommandeTarif
@@ -41,6 +42,15 @@ class CommandeTarif
     *
     */
     private $tarif;
+    
+    /**
+    * @ORM\OneToMany(targetEntity="OC\CoreBundle\Entity\User", mappedBy="commandeTarif")
+    */
+    private $visiteurs;
+    
+    public function __construct() {
+        $this->visiteurs = new ArrayCollection();
+    }
     
     /**
      * Get id
@@ -122,5 +132,43 @@ class CommandeTarif
     public function getTarif()
     {
         return $this->tarif;
+    }
+
+    public function setVisiteurs(ArrayCollection $visiteurs) {
+        $this->visiteurs = $visiteurs;
+    }
+    
+    /**
+     * Add visiteur
+     *
+     * @param \OC\CoreBundle\Entity\User $visiteur
+     *
+     * @return CommandeTarif
+     */
+    public function addVisiteur(\OC\CoreBundle\Entity\User $visiteur)
+    {
+        $this->visiteurs[] = $visiteur;
+        $visiteur->setCommandeTarif($this);
+        return $this;
+    }
+
+    /**
+     * Remove visiteur
+     *
+     * @param \OC\CoreBundle\Entity\User $visiteur
+     */
+    public function removeVisiteur(\OC\CoreBundle\Entity\User $visiteur)
+    {
+        $this->visiteurs->removeElement($visiteur);
+    }
+
+    /**
+     * Get visiteurs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVisiteurs()
+    {
+        return $this->visiteurs;
     }
 }

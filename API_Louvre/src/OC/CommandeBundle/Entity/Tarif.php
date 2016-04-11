@@ -49,6 +49,13 @@ class Tarif
      */
     private $cout;
     
+    /**
+    * @var bool
+    *
+    * @ORM\Column(name="requireBirthday", type="boolean")
+    */
+    private $requireBirthday;
+    
     public function __construct($key='new tarif') {
         $this->tarif_key=$key;
     }
@@ -159,5 +166,29 @@ class Tarif
     public function getTarifKey()
     {
         return $this->tarif_key;
+    }
+
+    /**
+     * Set requireBirthday
+     *
+     * @param boolean $requireBirthday
+     *
+     * @return Tarif
+     */
+    public function setRequireBirthday($requireBirthday)
+    {
+        $this->requireBirthday = $requireBirthday;
+
+        return $this;
+    }
+
+    /**
+     * Get requireBirthday
+     *
+     * @return boolean
+     */
+    public function getRequireBirthday()
+    {
+        return $this->requireBirthday;
     }
 }

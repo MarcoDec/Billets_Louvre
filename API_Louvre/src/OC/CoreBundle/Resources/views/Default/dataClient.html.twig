@@ -23,55 +23,29 @@
             </div>
             <div class="row">
                     Vous êtes sur le point de pré-réserver {{ initCommande.nbBillets }} billet(s) pour le Louvre pour la date {{ initCommande.dateReservation|date('d/m/Y') }}<br>
-                    <form method='POST'>
-                        <legend>Veuillez renseigner vos coordonnées</legend>
-                        Nom : <input type="text" name="nom" id="nom"/>
-                        Prénom : <input type="text" name="prenom" id="prenom"/><br>
-                        Pays : <input type="text" name="pays" id="pays"/>
-                            {# TODO : Mettre en liste #}
-                        Email : <input type="text" name="email" id="email"/><br>
-                        <br><br>
-                            <table>
-                                <caption>Les billets sont nominatifs, merci de renseigner les éléments manquants</caption>
-                                <thead>
-                                    <tr>
-                                        <th>n°</th>
-                                        <th>Date de visite</th>
-                                        <th>Demi-journée</th>
-                                        <th>Nom</th>
-                                        <th>Prénom</th>
-                                        <th>tarif</th>
-                                        <th>date de naissance</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for i in 1..initCommande.nbBillets %}
-                                        <tr>
-                                            <td>{{ i}}</td>
-                                            <td>{{initCommande.dateReservation|date('d/m/Y')}}</td>
-                                            <td><input type="checkbox" name="demiJournee_{{i}}" id="demiJournee_{{i}}" value="{{ initCommande.demiJournee }}"/></td>
-                                            <td><input type="text" name="nom_{{i}}" id="nom_{{i}}"/></td>
-                                            <td><input type="text" name="prenom_{{i}}" id="prenom_{{i}}"/></td>
-                                            <td>
-                                                <select name="tarif_{{i}}" id="tarif_{{i}}">
-                                                        <option value ="normal">Normal (16€)</option>
-                                                        <option value ="senior">Sénior (12€)</option>
-                                                        <option value ="reduit">Réductions sous condition (10€)</option>
-                                                        <option value ="enfant">Enfant de moins de 12ans (8€)</option>
-                                                        <option value ="gratuit">Enfant de moins de 4ans (gratuit)</option>
-                                                        
-                                                        <option value ="famille">Famille 2 adultes + 2 enfants</option>{# TODO : Gérer le forfait différemment #}
-                                                </select>
-                                            </td>{# TODO : Mettre en liste #}
-                                            <td><input type="date" name="date_naissance_{{i}}" id="date_naissance_{{i}}"/></td>{# TODO : Si besoin de vérification JS #}
-                                        </tr>
-                                    {% endfor %} 
-                                </tbody>
-                            </table>
-
-                    </form>
             </div>
-        
+        {{ form_start(form, {'method': 'POST'}) }}
+                CLIENT <br>
+                Nom : {{ form_widget(form.client.nom) }} <br>
+                Prénom : {{ form_widget(form.client.prenom) }} <br>
+                Email : {{ form_widget(form.client.email) }} <br>
+                <br>
+                COMMANDES <br>
+                {% for commande in form.commandes %}
+                -------------------------------------- <br>
+                    TARIF : {{ form_widget(commande.tarif) }} <br>
+                    QUANTITE: {{ form_widget(commande.quantity ) }} <br>
+                    Visiteurs : <br>
+                    {% for visitor in commande.visiteurs %}
+                    _____________________
+                        Nom : {{ form_widget(visitor.nom ) }} <br>
+                        Prénom : {{ form_widget(visitor.prenom ) }} <br>
+                        Date de Naissance : {{ form_widget(visitor.birthday ) }} <br>
+                    {% endfor %}
+                -------------------------------------- <br>
+                {% endfor %}
+            
+        {{ form_end(form) }}
     </div>
 {% endblock %}
 
@@ -79,8 +53,8 @@
     {{ parent() }}
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
-    {# <script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/jquery/jquery-1.8.2.min.js') }}"></script> #}
+    {# <script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/jquery/jquery-1.8.2.min.js') }}"></script> 
     <script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/fullcalendar/jquery.fullcalendar.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/calendar-settings.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bundles/MDPlanning/js/myEvents.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/MDPlanning/js/myEvents.js') }}"></script>#}
 {% endblock %}
