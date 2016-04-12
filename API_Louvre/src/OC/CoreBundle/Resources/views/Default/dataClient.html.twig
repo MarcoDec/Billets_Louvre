@@ -3,56 +3,80 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('bundles/adesignscalendar/css/fullcalendar/fullcalendar.css') }}" />
-    <link rel="stylesheet" href="{{ asset('bundles/MDPlanning/css/styles.css') }}" />
-    <style type="text/css">
-        table {
-            border-collapse: collapse;
-        }
-        td, th {
-            border: 1px solid black;
-            color: black;
-        }
-    </style>
+    {#<link rel="stylesheet" href="{{ asset('bundles/adesignscalendar/css/fullcalendar/fullcalendar.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/MDPlanning/css/styles.css') }}" />#}
+    <link rel="stylesheet" href="{{ asset('bundles/occore/css/styles2.css') }}" />
+    {#<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">#}
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-            <div class="row">
+    <div class="container" style="background-image: url({{asset('bundles/MDPlanning/img/LeLouvre.png')}});">
+            {#<div class="row">
                 <img class="col-lg-12 col-sm-12" src="{{asset('bundles/MDPlanning/img/LeLouvre.png')}}" alt="Le Louvre"/>
-            </div>
-            <div class="row">
+            </div>#}
+            <aside class="row">
+                    {{ form_start(form, {'method': 'POST'}) }}
                     Vous êtes sur le point de pré-réserver {{ initCommande.nbBillets }} billet(s) pour le Louvre pour la date {{ initCommande.dateReservation|date('d/m/Y') }}<br>
-            </div>
-        {{ form_start(form, {'method': 'POST'}) }}
-                CLIENT <br>
-                Nom : {{ form_widget(form.client.nom) }} <br>
-                Prénom : {{ form_widget(form.client.prenom) }} <br>
-                Email : {{ form_widget(form.client.email) }} <br>
-                <br>
-                COMMANDES <br>
-                {% for commande in form.commandes %}
-                -------------------------------------- <br>
-                    TARIF : {{ form_widget(commande.tarif) }} <br>
-                    QUANTITE: {{ form_widget(commande.quantity ) }} <br>
-                    Visiteurs : <br>
-                    {% for visitor in commande.visiteurs %}
-                    _____________________
-                        Nom : {{ form_widget(visitor.nom ) }} <br>
-                        Prénom : {{ form_widget(visitor.prenom ) }} <br>
-                        Date de Naissance : {{ form_widget(visitor.birthday ) }} <br>
-                    {% endfor %}
-                -------------------------------------- <br>
-                {% endfor %}
-            
-        {{ form_end(form) }}
+                    <section class="col-sm-offset-1 col-sm-10 lowPadding" id="accordion">
+                        {% for commande in form.commandes %}
+                                {% set XX_Tarif_Key = commande.vars.value.tarif.getTarifKey %}
+                                {% set XX_description = commande.vars.value.tarif.description %}  
+                                {% set XX_nBillets = commande.vars.value.tarif.nbBillets %}
+                                {% set XX_Tarif_Cout = commande.vars.value.tarif.getCout %}
+                                {% set XX_quantity = commande.vars.value.quantity %}
+                                {% set XX_Commande_Cout = XX_Tarif_Cout * commande.vars.value.quantity %}
+                                {% set XX_Commande_NbEntree = XX_nBillets * commande.vars.value.quantity %}
+                                {% set visible = "hidden" %} 
+                                {% if XX_quantity!=0 %}
+                                           {% set visible = "" %} 
+                                {% endif %}
+                            <header class="row" {{ visible }}>      
+                                <div class="col-sm-1 lowPadding tarif">{{ XX_Tarif_Key }}</div>
+                                <div class="col-sm-4 lowPadding description">{{ XX_description }}</div>
+                                <div class="col-sm-4 lowPadding nbbillets">Ce tarif comprend {{ XX_nBillets }} entrée(s) : {{ XX_Tarif_Cout }} <span class="glyphicon glyphicon-euro"></span></div>
+                                <div class="col-sm-3 lowPadding quantity"> x {{ XX_quantity }} => {{XX_Commande_NbEntree}} entrée(s) pour {{XX_Commande_Cout}}<span class="glyphicon glyphicon-euro"></span></div>
+                            </header>
+                            <article {{ visible }}>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Nom</th>
+                                            <th>Prénom</th>
+                                            <th>Date de naissance</th>    
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for visitor in commande.visiteurs %}
+                                            <tr>
+                                                <td>{{ form_widget(visitor.nom ) }}</td>
+                                                <td>{{ form_widget(visitor.prenom ) }}</td>
+                                                <td>{{ form_widget(visitor.birthday ) }} </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                            </article>
+                        {% endfor %}
+                    </section>
+                    <div class="col-sm-4 lowPadding">{{ form_row(form.client.nom) }}</div>
+                    <div class="col-sm-4 lowPadding">{{ form_row(form.client.prenom) }}</div>
+                    <div class="col-sm-4 lowPadding">{{ form_row(form.client.email) }}</div>
+                    {{ form_end(form, {'render_rest': false}) }}
+            </aside>
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+    <script>
+        $(function() {
+            $( "#accordion" ).accordion();
+        });
+    </script>
     {# <script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/jquery/jquery-1.8.2.min.js') }}"></script> 
     <script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/fullcalendar/jquery.fullcalendar.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/calendar-settings.js') }}"></script>
