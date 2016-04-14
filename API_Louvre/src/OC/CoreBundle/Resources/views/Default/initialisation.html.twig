@@ -9,14 +9,14 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
+    <div class="container-fluid" style="background-image: url({{asset('bundles/MDPlanning/img/LeLouvre.png')}});background-position: top;background-repeat: no-repeat;background-size:cover;">
             <div class="row">
                 <div class="col-md-offset-1 col-md-10">
-                    <div class="row">
+                    {#<div class="row">
                         <div class="col-lg-12 col-md-12 hidden-xs hidden-sm">
                             <img src="{{asset('bundles/MDPlanning/img/LeLouvre.png')}}" alt="Le Louvre"/>
                         </div>
-                    </div>
+                    </div>#}
                     <div class="row">
                         {{ form_start(form2, {'method': 'POST'}) }}    
                         <aside class="col-xm-12 col-md-5">
@@ -73,19 +73,26 @@
                         </aside>
                         <div class="col-md-1 hidden-xs hidden-sm"></div>
                         <section class="col-xm-12 col-md-6 lowPadding">
-                            <div class="col-xs-12 lowPadding">
+                            <div class="row">
                                 <legend><span class="glyphicon glyphicon-shopping-cart"></span> VOTRE COMMANDE</legend>
-                                <div class="col-xs-12 lowPadding error" hidden>Erreurs : {{ form_errors(form2) }} </div>  
                             </div>
-                            <div class="col-xs-6 lowPadding" style="height: 75px;">
-                                {{ form_row(form2.dateReservation, {'class':'form-control'}) }}
-                                <p class="info">Le Louvre est fermé les samedis et dimanches.</p>
+                            <div class="row error">{{ form_errors(form2) }}</div>  
+                            <div class="row">
+                                <div class="col-xs-6 lowPadding">
+                                        Date de la visite<br>
+                                         {{ form_widget(form2.dateReservation.day, {'class':'form-control'}) }}
+                                         {{ form_widget(form2.dateReservation.month, {'class':'form-control'}) }}
+                                         {{ form_widget(form2.dateReservation.year, {'class':'form-control'}) }}
+                                </div>
+                                <div class="col-xs-6 lowPadding">
+                                    {{ form_row(form2.demiJournee, {'class':'form-control'}) }}
+                                </div>
                             </div>
-                            <div class="col-xs-6 lowPadding"  style="height: 75px;">
-                                {{ form_row(form2.demiJournee, {'class':'form-control'}) }}
-                                <p class="info">Toute réservation pour la 1/2 journée courantes doit être passée avant 14h00.</p>
-                            </div>   
-                            <div class="col-xs-12 lowPadding">
+                            <div class="row">
+                                <div class="info col-xs-6 lowPadding">Le Louvre est fermé les samedis et dimanches.</div>
+                                <div class="info col-xs-6 lowPadding">Toute réservation pour la 1/2 journée courantes doit être passée avant 14h00.</div>
+                            </div>
+                            <div class="row">
                                 <table>
                                     <thead>
                                         <tr>
@@ -112,11 +119,11 @@
                                                 amount="{{ XX_Commande_Cout }}" 
                                                 place='{{XX_Commande_NbEntree}}'>
                                                     {# NOM du tarif #}
-                                                    <td>{{ form_widget(commande.tarif) }}</td>
+                                                    <td>{{ form_widget(commande.tarif,{'attr': {'disabled' : ''} }) }}</td>
                                                     {# PRIX du tarif #}
                                                     <td>{{ XX_Tarif_Cout }}<span class="glyphicon glyphicon-euro"></span></td>
                                                     {# QUANTITY #}
-                                                    <td>{{ form_widget(commande.quantity,{'attr': {'class': XX_Tarif_Key  } }) }}</td>       
+                                                    <td>{{ form_widget(commande.quantity,{'attr': {'class': XX_Tarif_Key, 'READONLY' : ''} }) }}</td>       
                                                     {# COUT Total des billets à ce tarif#}
                                                     <td class="sous-total" id="{{ XX_Tarif_Key }}_st">{{ XX_Commande_Cout }}  <span class="glyphicon glyphicon-euro"></span></td>
                                                     {# Nombre Total d'entrée #}       
@@ -128,7 +135,7 @@
                                         <tr>
                                             <th colspan="3">TOTAL:</th>
                                             <th id="total">0<span class="glyphicon glyphicon-euro"></span></th>
-                                            <th id="places">{{  form_widget( form2.nbBillets, {'attr': {'class' : 'total'}}) }}</th>
+                                            <th id="places">{{  form_widget( form2.nbBillets, {'attr': {'class' : 'total', 'READONLY' : ''} }) }}</th>
                                         </tr>
                                     </tfoot>
                                 </table>

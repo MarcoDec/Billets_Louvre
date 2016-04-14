@@ -9,7 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use OC\CommandeBundle\Entity\CommandeTarif;
 
@@ -46,7 +46,7 @@ class CommandeGlobaleType extends AbstractType
             ->add('nbBillets', IntegerType::class, array(
                 'label'=>'Total', 
                 'attr'=> array('style'=> 'width:100%;', 'min'=>'0')))
-            ->add('Reserver', SubmitType::class , array(
+            ->add('Reserver', ButtonType::class , array(
                 'label' => 'Cliquez ici pour Réserver', 
                 'attr' => array('style' => 'width:100%;')))
             ;

@@ -55,7 +55,7 @@ class CoreController extends Controller
         
         if ($request->isMethod('POST')) {
             $form2->handleRequest($request); // Récupération des données de la requête
-            print_r($request);
+           //print_r($request);
             if ($form2->isValid()) { 
                 $em=$this->getDoctrine()->getManager();
                 $em->persist($commandeGlobale_session);
@@ -92,7 +92,10 @@ class CoreController extends Controller
             throw $this->createNotFoundException("La page que vous demandez est indisponible. >(");
         }
         foreach ($commandeGlobale->getCommandes() as $commande ) {
-            $commande->addVisiteur(new User());
+            $nbIteration = $commande->getQuantity()*$commande->getTarif()->getNbBillets();
+            for ($i=0; $i<$nbIteration; $i++) {
+                $commande->addVisiteur(new User());
+            }
         }
         // TODO: Créer sous-objets commandesDetaillee pour etape_2
         $form=$this->get('form.factory')->create(new CommandeGlobale2Type(), $commandeGlobale);
