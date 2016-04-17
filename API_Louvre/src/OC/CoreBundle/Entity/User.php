@@ -24,14 +24,24 @@ class User
 
     /**
      * @var string
-     * @Assert\NotNull()
+     * @Assert\Length(
+     *      min = 3,
+    *       max = 50,
+    *       minMessage = "Veuillez entrer au moins {{ limit }} caractères.",
+    *       maxMessage = "Veuillez saisir moins de {{ limit }} caractères."
+    *   )
      * @ORM\Column(name="nom", type="string", length=255)
      */
     private $nom;
 
     /**
      * @var string
-     * @Assert\NotNull()
+     * @Assert\Length(
+     *      min = 3,
+    *       max = 50,
+    *       minMessage = "Veuillez entrer au moins {{ limit }} caractères.",
+    *       maxMessage = "Veuillez saisir moins de {{ limit }} caractères."
+    *   )
      * @ORM\Column(name="prenom", type="string", length=255)
      */
     private $prenom;
@@ -61,9 +71,9 @@ class User
     private $commandeTarif;
 
     public function __construct() {
-        $this->nom="Fill your LastName here";
-        $this->prenom="Fill your FirstName here";
-        $this->email="Fill your email here";
+        $this->nom="";
+        $this->prenom="";
+        $this->email="";
     }
     
     /**

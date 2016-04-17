@@ -5,6 +5,7 @@ namespace OC\CommandeBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Payment\CoreBundle\Entity\PaymentInstruction;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ExecutionContextInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -28,8 +29,7 @@ class CommandeGlobale
      * @var \DateTime
      *
      * @ORM\Column(name="date_reservation", type="date")
-     * @Assert\Range(
-     *          max="+6 months")
+     * 
      */
     private $dateReservation;       // Rempli à l'étape 1
 
@@ -87,6 +87,23 @@ class CommandeGlobale
         $this->commandes=new ArrayCollection();
     }
     
+    public function validate(ExecutionContextInterface $context) {
+
+        $dateResa=$this->getDateReservation();
+        $demiJournee=$this->getDemiJournee();
+        
+        $err = array();
+        $num_jour=$dateResa['w'];
+        
+        if ($num_jour==0 || $num_jour==6) {
+            $err[]='Le Louvre est fermé le samedi et le dimanche. Merci de choisir un autre jour';
+        }
+        if ($err.length!=0) {
+            $context->buildViolation('Erreur dans la saisie des informations')
+                ->atPath('tutu')
+                ->addViolation();
+        }
+    }
     
     /**
      * Get id

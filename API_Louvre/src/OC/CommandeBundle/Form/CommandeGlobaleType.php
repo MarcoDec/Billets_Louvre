@@ -46,9 +46,9 @@ class CommandeGlobaleType extends AbstractType
             ->add('nbBillets', IntegerType::class, array(
                 'label'=>'Total', 
                 'attr'=> array('style'=> 'width:100%;', 'min'=>'0')))
-            ->add('Reserver', ButtonType::class , array(
+            /*->add('Reserver', ButtonType::class , array(
                 'label' => 'Cliquez ici pour Réserver', 
-                'attr' => array('style' => 'width:100%;')))
+                'attr' => array('style' => 'width:100%;')))*/
             ;
         ;
     }

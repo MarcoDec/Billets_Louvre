@@ -14,10 +14,17 @@
             {#<div class="row">
                 <img class="col-lg-12 col-sm-12" src="{{asset('bundles/MDPlanning/img/LeLouvre.png')}}" alt="Le Louvre"/>
             </div>#}
-            <aside class="row">
                     {{ form_start(form, {'method': 'POST'}) }}
-                    Vous êtes sur le point de pré-réserver {{ initCommande.nbBillets }} billet(s) pour le Louvre pour la date {{ initCommande.dateReservation|date('d/m/Y') }}<br>
-                    <section class="col-sm-offset-1 col-sm-10 lowPadding" id="accordion">
+            <aside class="row">
+                    <div class="col-sm-2">
+                            <date class="row">
+                                {{ initCommande.dateReservation|date('d/m/Y') }}
+                            </date>
+                            <billets class="row">
+                                {{ initCommande.nbBillets }} entrée(s)
+                            </billets>
+                    </div>
+                    <section class="col-sm-8 lowPadding" id="accordion">
                         {% for commande in form.commandes %}
                                 {% set XX_Tarif_Key = commande.vars.value.tarif.getTarifKey %}
                                 {% set XX_description = commande.vars.value.tarif.description %}  
@@ -26,44 +33,114 @@
                                 {% set XX_quantity = commande.vars.value.quantity %}
                                 {% set XX_Commande_Cout = XX_Tarif_Cout * commande.vars.value.quantity %}
                                 {% set XX_Commande_NbEntree = XX_nBillets * commande.vars.value.quantity %}
-                                {% set visible = "hidden" %} 
+                                {% set XX_RequireBirthday = commande.vars.value.tarif.getRequireBirthday() %}
+                                
                                 {% if XX_quantity!=0 %}
-                                           {% set visible = "" %} 
+                                    <header class="row titre">      
+                                        <div class="col-sm-1 lowPadding tarif">{{ XX_Tarif_Key }}</div>
+                                        <div class="col-sm-4 lowPadding description">{{ XX_description }}</div>
+                                        <div class="col-sm-4 lowPadding nbbillets">Ce tarif comprend {{ XX_nBillets }} entrée(s) : {{ XX_Tarif_Cout }} <span class="glyphicon glyphicon-euro"></span></div>
+                                        <div class="col-sm-3 lowPadding quantity"> x {{ XX_quantity }} => {{XX_Commande_NbEntree}} entrée(s) pour {{XX_Commande_Cout}}<span class="glyphicon glyphicon-euro"></span></div>
+                                    </header>
+                                    <article>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Nom</th>
+                                                    <th>Prénom</th>
+                                                    {% if XX_RequireBirthday %}
+                                                        <th>Date de naissance</th>
+                                                    {% endif %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for visitor in commande.visiteurs %}
+                                                    
+                                                    <tr>
+                                                        <td>{{ form_widget(visitor.nom,{'attr': {'placeholder': 'enter visitor last name here'} } ) }}</td>
+                                                        <td>{{ form_widget(visitor.prenom,{'attr': {'placeholder': 'enter visitor first name here'} } ) }}</td>
+                                                        {% if XX_RequireBirthday %}
+                                                            <td>{{ form_widget(visitor.birthday.day) }}{{ form_widget(visitor.birthday.month) }}{{ form_widget(visitor.birthday.year) }}</td>
+                                                        {% endif %}
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </article>
                                 {% endif %}
-                            <header class="row" {{ visible }}>      
-                                <div class="col-sm-1 lowPadding tarif">{{ XX_Tarif_Key }}</div>
-                                <div class="col-sm-4 lowPadding description">{{ XX_description }}</div>
-                                <div class="col-sm-4 lowPadding nbbillets">Ce tarif comprend {{ XX_nBillets }} entrée(s) : {{ XX_Tarif_Cout }} <span class="glyphicon glyphicon-euro"></span></div>
-                                <div class="col-sm-3 lowPadding quantity"> x {{ XX_quantity }} => {{XX_Commande_NbEntree}} entrée(s) pour {{XX_Commande_Cout}}<span class="glyphicon glyphicon-euro"></span></div>
-                            </header>
-                            <article {{ visible }}>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Nom</th>
-                                            <th>Prénom</th>
-                                            <th>Date de naissance</th>    
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for visitor in commande.visiteurs %}
-                                            <tr>
-                                                <td>{{ form_widget(visitor.nom ) }}</td>
-                                                <td>{{ form_widget(visitor.prenom ) }}</td>
-                                                <td>{{ form_widget(visitor.birthday ) }} </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
 
-                            </article>
+
                         {% endfor %}
                     </section>
-                    <div class="col-sm-4 lowPadding">{{ form_row(form.client.nom) }}</div>
-                    <div class="col-sm-4 lowPadding">{{ form_row(form.client.prenom) }}</div>
-                    <div class="col-sm-4 lowPadding">{{ form_row(form.client.email) }}</div>
-                    {{ form_end(form, {'render_rest': false}) }}
             </aside>
+            <div class="row">
+                <before class='col-sm-2'>
+                    <a href='{{ url('etape_1') }}'>
+                    <span class="glyphicon glyphicon glyphicon glyphicon-chevron-left"></span></a>
+                </before>
+                <customer class="col-sm-8 lowPadding">
+                    <div class="form-inline">
+                        {% if form.client.nom.vars.valid==false %}
+                            {% set xx_div_nom = "form-group has-error has-feedback" %}
+                            {% set xx_span_nom = "glyphicon glyphicon-remove form-control-feedback" %}   
+                        {% elseif form.client.nom.vars.value|length<3 %}
+                            {% set xx_div_nom = "form-group has-warning has-feedback" %}
+                            {% set xx_span_nom = "glyphicon glyphicon-warning-sign form-control-feedback" %}
+                        {% else %}
+                            {% set xx_div_nom = "form-group has-success has-feedback" %}
+                            {% set xx_span_nom = "glyphicon glyphicon-ok form-control-feedback" %}
+                        {% endif %}
+                        <div class="{{xx_div_nom}}">
+                                <div class="input-group">
+                                    <h3 class="input-group-addon">Nom</h3>
+                                    {{form_widget(form.client.nom,{'attr': {'placeholder': 'enter your last name here', 'class': 'form-control'} })}}
+                                    <span class="{{xx_span_nom}}"></span>
+                                </div>
+                                    <span class="help-block">{{ form_errors(form.client.nom) }}</span>
+                        </div>
+                        {% if form.client.prenom.vars.valid==false %}
+                            {% set xx_div_prenom = "form-group has-error has-feedback" %}
+                            {% set xx_span_prenom = "glyphicon glyphicon-remove form-control-feedback" %}   
+                        {% elseif form.client.prenom.vars.value|length<3 %}
+                            {% set xx_div_prenom = "form-group has-warning has-feedback" %}
+                            {% set xx_span_prenom = "glyphicon glyphicon-warning-sign form-control-feedback" %}
+                        {% else %}
+                            {% set xx_div_prenom = "form-group has-success has-feedback" %}
+                            {% set xx_span_prenom = "glyphicon glyphicon-ok form-control-feedback" %}
+                        {% endif %}
+                        <div class="{{xx_div_prenom}}">
+                                <div class="input-group">
+                                    <h3 class="input-group-addon">Prénom</h3>
+                                    {{form_widget(form.client.prenom,{'attr': {'placeholder': 'enter your first name here', 'class': 'form-control'} })}}
+                                    <span class="{{xx_span_prenom}}"></span>
+                                </div>
+                                <span class="help-block">{{ form_errors(form.client.prenom) }}</span>
+                        </div>
+                        {% if form.client.email.vars.valid==false %}
+                            {% set xx_div_email = "form-group has-error has-feedback" %}
+                            {% set xx_span_email = "glyphicon glyphicon-remove form-control-feedback" %}   
+                        {% elseif form.client.email.vars.value|length<5 %}
+                            {% set xx_div_email = "form-group has-warning has-feedback" %}
+                            {% set xx_span_email = "glyphicon glyphicon-warning-sign form-control-feedback" %}
+                        {% else %}
+                            {% set xx_div_email = "form-group has-success has-feedback" %}
+                            {% set xx_span_email = "glyphicon glyphicon-ok form-control-feedback" %}
+                            {% endif %}
+                        <div class="{{xx_div_email}}">
+                                <div class="input-group">
+                                    <h3 class="input-group-addon">Email</h3>
+                                    {{form_widget(form.client.email,{'attr': {'placeholder': 'enter your email her', 'class': 'form-control'} })}}
+                                    <span class="{{xx_span_email}}"></span>
+                                </div>
+                                <span class="help-block">{{ form_errors(form.client.email) }}</span>
+                        </div>
+                    </div>
+                </customer>
+                <next class='col-sm-2'>
+                    <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                </next>
+            </div>
+            {{ form_end(form, {'render_rest': false}) }}
     </div>
 {% endblock %}
 
@@ -72,10 +149,9 @@
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/occore/js/events2.js') }}"></script>
     <script>
-        $(function() {
-            $( "#accordion" ).accordion();
-        });
+
     </script>
     {# <script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/jquery/jquery-1.8.2.min.js') }}"></script> 
     <script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/fullcalendar/jquery.fullcalendar.min.js') }}"></script>
