@@ -1,0 +1,16 @@
+{% block date_widget %}
+    {% spaceless %}
+        <div class='form-inline'>
+            <div class='input-group'>
+                <span class="input-group-addon">{{ form_label(form) }}</span>
+                <div class='form-control' style="padding:0px;"> {# ,{'attr' :{'class':'form-control'} }#}
+                    {{ form_widget(form.day,{'attr' :{'style':'height:100%;'} }) }}
+                    {{ form_widget(form.month,{'attr' :{'style':'height:100%;'} }) }}
+                    {{ form_widget(form.year,{'attr' :{'style':'height:100%;'} }) }}
+                </div>
+                {#{{ form_widget(form,{'attr': {'class': 'form-control input-sm'} }) }}#}
+            </div>
+            {{ form_errors(form) }}
+        </div>
+    {% endspaceless %}
+{% endblock date_widget %}

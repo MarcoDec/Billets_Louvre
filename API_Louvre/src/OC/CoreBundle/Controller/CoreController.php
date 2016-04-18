@@ -91,15 +91,52 @@ class CoreController extends Controller
         if ($request->getSession()->getId()!=$commandeGlobale->getSessionId()) {
             throw $this->createNotFoundException("La page que vous demandez est indisponible. >(");
         }
-        foreach ($commandeGlobale->getCommandes() as $commande ) {
-            $nbIteration = $commande->getQuantity()*$commande->getTarif()->getNbBillets();
-            for ($i=0; $i<$nbIteration; $i++) {
-                $commande->addVisiteur(new User());
-            }
-        }
-        // TODO: Créer sous-objets commandesDetaillee pour etape_2
-        $form=$this->get('form.factory')->create(new CommandeGlobale2Type(), $commandeGlobale);
         
+        if ($request->isMethod('POST')) {
+            $form=$this->get('form.factory')->create(new CommandeGlobale2Type(), $commandeGlobale);
+            $form->handleRequest($request); // Récupération des données de la requête
+           //print_r($request);
+            if ($form->isValid()) { 
+                $em=$this->getDoctrine()->getManager();
+                $em->persist($commandeGlobale);
+                $em->flush();
+                
+                /*$url = $this->get('router')->generate( 'etape_2', array(
+                    'id' => $commandeGlobale_session->getId())
+                              );
+                return new RedirectResponse($url); */
+            }
+        } else {
+            foreach ($commandeGlobale->getCommandes() as $commande ) {
+                $nbIteration = $commande->getQuantity()*$commande->getTarif()->getNbBillets();
+                if (count($commande->getVisiteurs())==$nbIteration) {
+                    // On ne fait rien car tout est déjà là
+                } else if (count($commande->getVisiteurs()) < $nbIteration) {
+                    // On complète les éléments manquants
+                    $nb_add=$nbIteration - count($commande->getVisiteurs());
+                    for ($i=0; $i<$nb_add; $i++) {
+                        $commande->addVisiteur(new User());
+                    }
+                } else if (count($commande->getVisiteurs()) > $nbIteration) {
+                    // On supprime les éléments en trop
+                    $nb_supp=count($commande->getVisiteurs()) - $nbIteration;
+                    $nb_visiteur=count($commande->getVisiteurs())-1;
+                    for ($i=0; $i<$nb_supp; $i++) {
+                        $userToRemove=$commande->getVisiteurs()[$nb_visiteur-$i];
+                        $commande->removeVisiteur($userToRemove);
+                    }
+                } else {
+                    // On initie complètement la liste
+                    for ($i=0; $i<$nbIteration; $i++) {
+                        $commande->addVisiteur(new User());
+                    }
+                }
+                $em=$this->getDoctrine()->getManager();
+                $em->persist($commandeGlobale);
+                $em->flush();
+            }
+            $form=$this->get('form.factory')->create(new CommandeGlobale2Type(), $commandeGlobale);
+        }
         return $this->render('OCCoreBundle:Default:dataClient.html.twig', array(
              'initCommande'=>$commandeGlobale,
              'form'=>$form->createView()));

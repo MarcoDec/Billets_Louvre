@@ -1,4 +1,5 @@
 {% extends '::base.html.twig' %}
+{% form_theme form2 'OCCoreBundle:Form:date.html.twig'  'OCCoreBundle:Form:checkbox.html.twig'%}
 {% block title %}Welcome in Le Louvre{% endblock %}
 
 {% block stylesheets %}
@@ -72,14 +73,12 @@
                             </div>
                             <div class="row error">{{ form_errors(form2) }}</div>  
                             <div class="row">
-                                <div class="col-xs-6 lowPadding">
-                                        Date de la visite<br>
-                                         {{ form_widget(form2.dateReservation.day, {'class':'form-control'}) }}
-                                         {{ form_widget(form2.dateReservation.month, {'class':'form-control'}) }}
-                                         {{ form_widget(form2.dateReservation.year, {'class':'form-control'}) }}
+                                <div class="col-xs-8 lowPadding">
+                                    {{ form_widget(form2.dateReservation) }}
                                 </div>
-                                <div class="col-xs-6 lowPadding">
-                                    {{ form_row(form2.demiJournee, {'class':'form-control'}) }}
+                                <div class="col-xs-4 lowPadding">
+                                    {#{{ form_row(form2.demiJournee, {'class':'form-control'}) }}#}
+                                        {{ form_widget(form2.demiJournee) }}
                                 </div>
                             </div>
                             <div class="row">

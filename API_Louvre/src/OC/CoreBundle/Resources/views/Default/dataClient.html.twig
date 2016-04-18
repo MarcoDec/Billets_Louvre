@@ -1,4 +1,5 @@
 {% extends '::base.html.twig' %}
+{% form_theme form 'OCCoreBundle:Form:date.html.twig' %}
 {% block title %}Welcome in Le Louvre{% endblock %}
 
 {% block stylesheets %}
@@ -16,15 +17,16 @@
             </div>#}
                     {{ form_start(form, {'method': 'POST'}) }}
             <aside class="row">
-                    <div class="col-sm-2">
-                            <date class="row">
-                                {{ initCommande.dateReservation|date('d/m/Y') }}
+                    <header class="col-sm-offset-2 col-sm-8">
+                            <h1>Renseigner les noms et prénoms des visiteurs.</h1>
+                            <date class="col-sm-6">
+                                Date programmée de la visite : {{ initCommande.dateReservation|date('d/m/Y') }}
                             </date>
-                            <billets class="row">
-                                {{ initCommande.nbBillets }} entrée(s)
+                            <billets class="col-sm-6">
+                                Nombre de place : {{ initCommande.nbBillets }} entrée(s)
                             </billets>
-                    </div>
-                    <section class="col-sm-8 lowPadding" id="accordion">
+                    </header>
+                    <section class="col-sm-offset-2 col-sm-8 lowPadding panel-group" id="accordion">
                         {% for commande in form.commandes %}
                                 {% set XX_Tarif_Key = commande.vars.value.tarif.getTarifKey %}
                                 {% set XX_description = commande.vars.value.tarif.description %}  
@@ -36,14 +38,13 @@
                                 {% set XX_RequireBirthday = commande.vars.value.tarif.getRequireBirthday() %}
                                 
                                 {% if XX_quantity!=0 %}
-                                    <header class="row titre">      
-                                        <div class="col-sm-1 lowPadding tarif">{{ XX_Tarif_Key }}</div>
-                                        <div class="col-sm-4 lowPadding description">{{ XX_description }}</div>
-                                        <div class="col-sm-4 lowPadding nbbillets">Ce tarif comprend {{ XX_nBillets }} entrée(s) : {{ XX_Tarif_Cout }} <span class="glyphicon glyphicon-euro"></span></div>
-                                        <div class="col-sm-3 lowPadding quantity"> x {{ XX_quantity }} => {{XX_Commande_NbEntree}} entrée(s) pour {{XX_Commande_Cout}}<span class="glyphicon glyphicon-euro"></span></div>
-                                    </header>
-                                    <article>
-                                        <table>
+                                    <div class="panel panel-default">
+                                        <div class='panel-heading'>
+                                            <h3  class="panel-title">Tarif {{ XX_Tarif_Key }} : {{XX_Commande_NbEntree}} entrée(s) ({{ XX_quantity }}x{{ XX_Tarif_Cout }}€ = {{XX_Commande_Cout}}€)</h3>
+                                        </div>
+                                    </div>
+                                    <article class='panel-collapse collapse in'>
+                                        <table class = 'panel-body'>
                                             <thead>
                                                 <tr>
                                                     <th>Nom</th>
@@ -57,8 +58,8 @@
                                                 {% for visitor in commande.visiteurs %}
                                                     
                                                     <tr>
-                                                        <td>{{ form_widget(visitor.nom,{'attr': {'placeholder': 'enter visitor last name here'} } ) }}</td>
-                                                        <td>{{ form_widget(visitor.prenom,{'attr': {'placeholder': 'enter visitor first name here'} } ) }}</td>
+                                                        <td>{{ form_widget(visitor.nom,{'attr': {'placeholder': 'Entrer le nom du visiteur ici'} } ) }}</td>
+                                                        <td>{{ form_widget(visitor.prenom,{'attr': {'placeholder': 'Entrer le prénom du visiteur ici'} } ) }}</td>
                                                         {% if XX_RequireBirthday %}
                                                             <td>{{ form_widget(visitor.birthday.day) }}{{ form_widget(visitor.birthday.month) }}{{ form_widget(visitor.birthday.year) }}</td>
                                                         {% endif %}
@@ -90,13 +91,15 @@
                             {% set xx_div_nom = "form-group has-success has-feedback" %}
                             {% set xx_span_nom = "glyphicon glyphicon-ok form-control-feedback" %}
                         {% endif %}
-                        <div class="{{xx_div_nom}}">
+                        <div class="col-sm-4">
+                            <div class="{{xx_div_nom}}">
                                 <div class="input-group">
                                     <h3 class="input-group-addon">Nom</h3>
-                                    {{form_widget(form.client.nom,{'attr': {'placeholder': 'enter your last name here', 'class': 'form-control'} })}}
+                                    {{form_widget(form.client.nom,{'attr': {'placeholder': 'Entrer votre nom ici', 'class': 'form-control'} })}}
                                     <span class="{{xx_span_nom}}"></span>
                                 </div>
                                     <span class="help-block">{{ form_errors(form.client.nom) }}</span>
+                            </div>
                         </div>
                         {% if form.client.prenom.vars.valid==false %}
                             {% set xx_div_prenom = "form-group has-error has-feedback" %}
@@ -108,13 +111,15 @@
                             {% set xx_div_prenom = "form-group has-success has-feedback" %}
                             {% set xx_span_prenom = "glyphicon glyphicon-ok form-control-feedback" %}
                         {% endif %}
-                        <div class="{{xx_div_prenom}}">
+                        <div class="col-sm-4">
+                            <div class="{{xx_div_prenom}}">
                                 <div class="input-group">
                                     <h3 class="input-group-addon">Prénom</h3>
-                                    {{form_widget(form.client.prenom,{'attr': {'placeholder': 'enter your first name here', 'class': 'form-control'} })}}
+                                    {{form_widget(form.client.prenom,{'attr': {'placeholder': 'Entrer votre prénom ici', 'class': 'form-control'} })}}
                                     <span class="{{xx_span_prenom}}"></span>
                                 </div>
                                 <span class="help-block">{{ form_errors(form.client.prenom) }}</span>
+                            </div>
                         </div>
                         {% if form.client.email.vars.valid==false %}
                             {% set xx_div_email = "form-group has-error has-feedback" %}
@@ -126,13 +131,15 @@
                             {% set xx_div_email = "form-group has-success has-feedback" %}
                             {% set xx_span_email = "glyphicon glyphicon-ok form-control-feedback" %}
                             {% endif %}
-                        <div class="{{xx_div_email}}">
-                                <div class="input-group">
-                                    <h3 class="input-group-addon">Email</h3>
-                                    {{form_widget(form.client.email,{'attr': {'placeholder': 'enter your email her', 'class': 'form-control'} })}}
-                                    <span class="{{xx_span_email}}"></span>
-                                </div>
-                                <span class="help-block">{{ form_errors(form.client.email) }}</span>
+                        <div class="col-sm-4">
+                            <div class="{{xx_div_email}}">
+                                    <div class="input-group">
+                                        <h3 class="input-group-addon">Email</h3>
+                                        {{form_widget(form.client.email,{'attr': {'placeholder': 'Entrer votre email ici', 'class': 'form-control'} })}}
+                                        <span class="{{xx_span_email}}"></span>
+                                    </div>
+                                    <span class="help-block">{{ form_errors(form.client.email) }}</span>
+                            </div>
                         </div>
                     </div>
                 </customer>

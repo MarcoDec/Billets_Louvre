@@ -37,7 +37,7 @@ class CommandeGlobaleType extends AbstractType
             ->add('dateReservation', DateType::class, array(
                 'label' => 'Date réservation'))
             ->add('demiJournee', CheckboxType::class, array(
-                'label' => '1/2 journée -->', 
+                'label' => '1/2 journée', 
                 'required'=> false))
             ->add('commandes', CollectionType::class, [
                 'type' => new CommandeTarifType,

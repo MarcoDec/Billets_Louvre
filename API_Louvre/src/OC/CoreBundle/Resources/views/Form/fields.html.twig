@@ -1,0 +1,11 @@
+{% block form_row %}
+    {% spaceless %}
+        <div class='form-inline'>
+            <div class='input-group'>
+                <span class="input-group-addon">{{ form_label(form) }}</span>
+                {{ form_widget(form,{'attr': {'class': 'form-control'} }) }}
+            </div>
+            {{ form_errors(form) }}
+        </div>
+    {% endspaceless %}
+{% endblock form_row %}

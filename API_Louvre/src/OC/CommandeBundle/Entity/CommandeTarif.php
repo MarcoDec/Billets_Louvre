@@ -44,7 +44,7 @@ class CommandeTarif
     private $tarif;
     
     /**
-    * @ORM\OneToMany(targetEntity="OC\CoreBundle\Entity\User", mappedBy="commandeTarif")
+    * @ORM\OneToMany(targetEntity="OC\CoreBundle\Entity\User", mappedBy="commandeTarif", cascade={"persist"})
     */
     private $visiteurs;
     

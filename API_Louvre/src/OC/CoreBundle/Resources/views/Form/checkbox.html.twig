@@ -1,0 +1,21 @@
+{% block checkbox_widget %}
+    {% set type = type|default('checkbox') %}
+    {% spaceless %}
+    <div class="input-group">   
+      <div class="form-group">
+        <div class="input-group">
+          <span class="input-group-addon">
+            {{ block('form_widget_simple') }}
+          </span>
+          <span class="input-group-addon">{{ form_label(form) }}</span>
+        </div>
+      </div>
+    {% endspaceless %}
+{% endblock checkbox_widget %}
+{#}        <div class='form-inline'>
+            <div class='input-group'>
+                <span class="input-group-addon">{{ form_label(form) }}</span>
+                {{ form_widget(form,{'attr': {'class': 'form-control'} }) }}
+            </div>
+            {{ form_errors(form) }}
+        </div>#}
