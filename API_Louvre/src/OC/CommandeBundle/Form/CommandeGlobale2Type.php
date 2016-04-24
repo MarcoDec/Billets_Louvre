@@ -21,7 +21,8 @@ class CommandeGlobale2Type extends AbstractType
     {
         $builder
             ->add('client', ClientType::class)
-            ->add('commandes', CollectionType::class, array('entry_type' => CommandeTarif2Type::class))
+            ->add('commandes', CollectionType::class, array(
+                'entry_type' => CommandeTarif2Type::class))
             /*->add('Reserver', SubmitType::class , array(
                 'label' => 'Cliquez ici pour Réserver', 
                 'attr' => array('style' => 'width:100%;')))*/

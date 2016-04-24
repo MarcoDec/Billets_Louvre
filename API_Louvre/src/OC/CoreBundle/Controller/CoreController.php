@@ -114,10 +114,10 @@ class CoreController extends Controller
                     'id' => $commandeGlobale->getId())
                               );*/
                 /*eturn new RedirectResponse($url);*/
-               /* $url = $this->get('router')->generate( 'paiement', array(
+                $url = $this->get('router')->generate( 'paiement', array(
                     'id' => $commandeGlobale->getId())
                               );
-                return new RedirectResponse($url);*/
+                return new RedirectResponse($url);
             }
         } else { // GET
             foreach ($commandeGlobale->getCommandes() as $commande ) {
