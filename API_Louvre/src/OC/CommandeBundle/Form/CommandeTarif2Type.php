@@ -19,9 +19,10 @@ class CommandeTarif2Type extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('tarif', TarifType::class)
-            ->add('quantity', TextType::class, array('label' => 'Saisissez ici la quantité'))
-            ->add('visiteurs', CollectionType::class, array('entry_type' => VisitorType::class))
+            /*->add('tarif', TarifType::class)
+            ->add('quantity', TextType::class, array('label' => 'Saisissez ici la quantité'))*/
+            ->add('visiteurs', CollectionType::class, array(
+                'entry_type' => VisitorType::class))
         ;
     }
     
