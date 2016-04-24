@@ -86,6 +86,7 @@ class CoreController extends Controller
         $em = $this->getDoctrine()->getManager(); 
         $CommandeGlobaleRepository = $em->getRepository('OCCommandeBundle:CommandeGlobale');
         $commandeGlobale=$CommandeGlobaleRepository->find($id);
+        $espion="ESPION";
         
         // On vérifie que l'ID de session de la commande correspond bien à l'Id de session de la personne
         if ($request->getSession()->getId()!=$commandeGlobale->getSessionId()) {
@@ -93,20 +94,40 @@ class CoreController extends Controller
         }
         
         if ($request->isMethod('POST')) {
+
+            $espion+="Dataclient : POST<br>";
+
             $form=$this->get('form.factory')->create(new CommandeGlobale2Type(), $commandeGlobale);
             $form->handleRequest($request); // Récupération des données de la requête
-           //print_r($request);
             if ($form->isValid()) { 
+                $espion+="   formulaire validé <br>";
                 $em=$this->getDoctrine()->getManager();
                 $em->persist($commandeGlobale);
+                // On récupère les données client
+                print_r($commandeGlobale->getClient());
+                $em->persist($commandeGlobale->getClient());
+                // On récupère les données visiteurs
+                foreach ($commandeGlobale->getCommandes() as $commande ) {
+                    foreach ($commande->getVisiteurs() as $visiteur ) {
+                        $em->persist($visiteur);
+                    }
+                    $em->persist($commande);
+                }
+                
+                
                 $em->flush();
                 
                 /*$url = $this->get('router')->generate( 'etape_2', array(
-                    'id' => $commandeGlobale_session->getId())
+                    'id' => $commandeGlobale->getId())
+                              );*/
+                /*eturn new RedirectResponse($url);*/
+               /* $url = $this->get('router')->generate( 'paiement', array(
+                    'id' => $commandeGlobale->getId())
                               );
-                return new RedirectResponse($url); */
+                return new RedirectResponse($url);*/
             }
-        } else {
+        } else { // GET
+            $espion+="Dataclient : GET<br>";
             foreach ($commandeGlobale->getCommandes() as $commande ) {
                 $nbIteration = $commande->getQuantity()*$commande->getTarif()->getNbBillets();
                 if (count($commande->getVisiteurs())==$nbIteration) {
@@ -114,31 +135,42 @@ class CoreController extends Controller
                 } else if (count($commande->getVisiteurs()) < $nbIteration) {
                     // On complète les éléments manquants
                     $nb_add=$nbIteration - count($commande->getVisiteurs());
+                    $espion+="    Ajout visiteur manquants :"+$nb_add+"<br>";
                     for ($i=0; $i<$nb_add; $i++) {
-                        $commande->addVisiteur(new User());
+                        $newUser = new User();
+                        $em->persist($newUser);
+                        $commande->addVisiteur($newUser);
                     }
                 } else if (count($commande->getVisiteurs()) > $nbIteration) {
                     // On supprime les éléments en trop
                     $nb_supp=count($commande->getVisiteurs()) - $nbIteration;
                     $nb_visiteur=count($commande->getVisiteurs())-1;
+                    $espion+="    Suppression visiteur en trop :"+$nb_supp+"<br>";
                     for ($i=0; $i<$nb_supp; $i++) {
                         $userToRemove=$commande->getVisiteurs()[$nb_visiteur-$i];
                         $commande->removeVisiteur($userToRemove);
+                        $em->persist($userToRemove);
                     }
                 } else {
                     // On initie complètement la liste
+                     $espion+="    Ajout de tous les visiteurs :"+$nbIteration+"<br>";
                     for ($i=0; $i<$nbIteration; $i++) {
-                        $commande->addVisiteur(new User());
+                        $newUser = new User();
+                        $em->persist($newUser);
+                        $commande->addVisiteur($newUser);
                     }
                 }
-                $em=$this->getDoctrine()->getManager();
-                $em->persist($commandeGlobale);
-                $em->flush();
+                $em->persist($commande);
             }
+            
+            $em->persist($commandeGlobale);
+            $em->flush();
             $form=$this->get('form.factory')->create(new CommandeGlobale2Type(), $commandeGlobale);
         }
         return $this->render('OCCoreBundle:Default:dataClient.html.twig', array(
              'initCommande'=>$commandeGlobale,
-             'form'=>$form->createView()));
+             'form'=>$form->createView(),
+             'espion'=>$espion)
+            );
     }
 }

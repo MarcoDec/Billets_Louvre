@@ -38,13 +38,12 @@ class CommandeTarif
     
     /**
     * @ORM\ManyToOne(targetEntity="OC\CommandeBundle\Entity\Tarif")
-    * @ORM\JoinColumn(nullable=false)
     *
     */
     private $tarif;
     
     /**
-    * @ORM\OneToMany(targetEntity="OC\CoreBundle\Entity\User", mappedBy="commandeTarif", cascade={"persist"})
+    * @ORM\OneToMany(targetEntity="OC\CoreBundle\Entity\User", mappedBy="commandeTarif")
     */
     private $visiteurs;
     

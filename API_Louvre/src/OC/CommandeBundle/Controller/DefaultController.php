@@ -29,12 +29,11 @@ class DefaultController extends Controller
      * @Template
      */
     public function paymentAction($id=0) //id of the order
-    { 
+    {   $commandeGlobale = new CommandeGlobale();
+     
         $commandeGlobaleRepository= $this->em->getRepository('OCCommandeBundle:CommandeGlobale');
-        
-        //$commandeGlobale=$commandeGlobaleRepository->find($id);
-        $commandeGlobale = new CommandeGlobale();
-        
+        $commandeGlobale=$commandeGlobaleRepository->find($id);
+     
         $form = $this->getFormFactory()->create('jms_choose_payment_method', null, array(
             'amount'   => $commandeGlobale->getPrice(),
             'currency' => 'EUR',

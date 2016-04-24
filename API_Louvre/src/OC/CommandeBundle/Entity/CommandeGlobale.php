@@ -65,7 +65,7 @@ class CommandeGlobale
     /**
      * @var string
      *
-     * @ORM\Column(name="sessionId", type="string", length=255)
+     * @ORM\Column(name="sessionId", type="string", length=255, nullable=true)
      */
     private $sessionId;             // Rempli à l'étape 1
     
@@ -364,5 +364,15 @@ class CommandeGlobale
     public function getClient()
     {
         return $this->client;
+    }
+    
+    public function getPrice() {
+        $price=0;
+        foreach ($this->commandes as $commande_tarif) {
+            $cout_tarif = $commande_tarif->getTarif()->getCout();
+            $quantity = $commande_tarif->getQuantity();
+            $price+=$cout_tarif*$quantity;
+        }
+        return $price;
     }
 }

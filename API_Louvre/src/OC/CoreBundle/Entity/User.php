@@ -66,7 +66,7 @@ class User
      * @var \DateTime
      *
      * @ORM\ManyToOne(targetEntity="OC\CommandeBundle\Entity\CommandeTarif", inversedBy="visiteurs")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $commandeTarif;
 

@@ -12,10 +12,7 @@
 
 {% block body %}
     <div class="container" style="background-image: url({{asset('bundles/MDPlanning/img/LeLouvre.png')}});background-position: top;background-repeat: no-repeat;background-size:cover;">
-            {#<div class="row">
-                <img class="col-lg-12 col-sm-12" src="{{asset('bundles/MDPlanning/img/LeLouvre.png')}}" alt="Le Louvre"/>
-            </div>#}
-                    {{ form_start(form, {'method': 'POST'}) }}
+            {{ form_start(form, {'method': 'POST'}) }}
             <aside class="row">
                     <header class="col-sm-offset-2 col-sm-8">
                             <h1>Renseigner les noms et prénoms des visiteurs.</h1>
@@ -36,32 +33,50 @@
                                 {% set XX_Commande_Cout = XX_Tarif_Cout * commande.vars.value.quantity %}
                                 {% set XX_Commande_NbEntree = XX_nBillets * commande.vars.value.quantity %}
                                 {% set XX_RequireBirthday = commande.vars.value.tarif.getRequireBirthday() %}
+                                {% set I = loop.index0 %}
                                 
                                 {% if XX_quantity!=0 %}
                                     <div class="panel panel-default">
                                         <div class='panel-heading'>
-                                            <h3  class="panel-title">Tarif {{ XX_Tarif_Key }} : {{XX_Commande_NbEntree}} entrée(s) ({{ XX_quantity }}x{{ XX_Tarif_Cout }}€ = {{XX_Commande_Cout}}€)</h3>
+                                            <h3  class="panel-title">Tarif {{ XX_Tarif_Key }} : {{XX_Commande_NbEntree}} entrée(s) ({{ XX_quantity }}x{{ XX_Tarif_Cout }}€ = {{XX_Commande_Cout}}€)
+                                                <div class='error myhead' hidden><span class="glyphicon glyphicon-warning-sign"></span> Merci de corriger les erreurs</div>
+                                            </h3>
+                                            
                                         </div>
                                     </div>
-                                    <article class='panel-collapse collapse in'>
+                                    <article class='panel-collapse collapse in' tarif='{{ XX_Tarif_Key }}' loops='{{ I }}'>
                                         <table class = 'panel-body'>
                                             <thead>
                                                 <tr>
-                                                    <th>Nom</th>
-                                                    <th>Prénom</th>
+                                                    <th>Nom <span class='error' hidden> (au moins 3 caractères)</span></th>
+                                                    <th>Prénom <span class='error' hidden> (au moins 3 caractères)</span></th>
                                                     {% if XX_RequireBirthday %}
-                                                        <th>Date de naissance</th>
+                                                        <th colspan="3">Date de naissance <myErr class='error' hidden><span class="glyphicon glyphicon-warning-sign"></myErr></th>
                                                     {% endif %}
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for visitor in commande.visiteurs %}
                                                     
-                                                    <tr>
-                                                        <td>{{ form_widget(visitor.nom,{'attr': {'placeholder': 'Entrer le nom du visiteur ici'} } ) }}</td>
-                                                        <td>{{ form_widget(visitor.prenom,{'attr': {'placeholder': 'Entrer le prénom du visiteur ici'} } ) }}</td>
+                                                    <tr class="visitor" birthday="{{ XX_RequireBirthday }}">
+                                                        <td>
+                                                            {{ form_widget(visitor.nom,{'attr': {'placeholder': 'Entrer le nom du visiteur ici','class': 'form-control'} } ) }}
+                                                            <span class="glyphicon form-control-feedback"></span>
+                                                        </td>
+                                                        <td>
+                                                            {{ form_widget(visitor.prenom,{'attr': {'placeholder': 'Entrer le prénom du visiteur ici','class': 'form-control'} } ) }}
+                                                            <span class="glyphicon form-control-feedback"></span>
+                                                        </td>
                                                         {% if XX_RequireBirthday %}
-                                                            <td>{{ form_widget(visitor.birthday.day) }}{{ form_widget(visitor.birthday.month) }}{{ form_widget(visitor.birthday.year) }}</td>
+                                                            <td>
+                                                                {{ form_widget(visitor.birthday.day,{'attr': {'class': 'form-control'} }) }}
+                                                            </td>
+                                                            <td>
+                                                                {{ form_widget(visitor.birthday.month,{'attr': {'class': 'form-control'} }) }}
+                                                            </td>
+                                                            <td>
+                                                                {{ form_widget(visitor.birthday.year,{'attr': {'class': 'form-control'} }) }}
+                                                            </td>
                                                         {% endif %}
                                                     </tr>
                                                 {% endfor %}
@@ -91,7 +106,7 @@
                             {% set xx_div_nom = "form-group has-success has-feedback" %}
                             {% set xx_span_nom = "glyphicon glyphicon-ok form-control-feedback" %}
                         {% endif %}
-                        <div class="col-sm-4">
+                        <div class="col-sm-4" id="nom_client">
                             <div class="{{xx_div_nom}}">
                                 <div class="input-group">
                                     <h3 class="input-group-addon">Nom</h3>
@@ -111,7 +126,7 @@
                             {% set xx_div_prenom = "form-group has-success has-feedback" %}
                             {% set xx_span_prenom = "glyphicon glyphicon-ok form-control-feedback" %}
                         {% endif %}
-                        <div class="col-sm-4">
+                        <div class="col-sm-4"  id="prenom_client"">
                             <div class="{{xx_div_prenom}}">
                                 <div class="input-group">
                                     <h3 class="input-group-addon">Prénom</h3>
@@ -131,7 +146,7 @@
                             {% set xx_div_email = "form-group has-success has-feedback" %}
                             {% set xx_span_email = "glyphicon glyphicon-ok form-control-feedback" %}
                             {% endif %}
-                        <div class="col-sm-4">
+                        <div class="col-sm-4"  id="email_client">
                             <div class="{{xx_div_email}}">
                                     <div class="input-group">
                                         <h3 class="input-group-addon">Email</h3>
@@ -147,8 +162,10 @@
                     <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
                 </next>
             </div>
+            {{ form_widget(form._token) }}
             {{ form_end(form, {'render_rest': false}) }}
     </div>
+    <espion>Valeur Espion : {{ espion }}</espion>
 {% endblock %}
 
 {% block javascripts %}
