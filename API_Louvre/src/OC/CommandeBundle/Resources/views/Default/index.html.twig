@@ -1,11 +1,34 @@
+{% extends '::base.html.twig' %}
+{% block title %}Paiement de votre Commande{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {#<link rel="stylesheet" href="{{ asset('bundles/occore/css/styles2.css') }}" />#}
+{% endblock %}
 
 {% block body %}
-This is the Commande Form
-    <div class="container">
-        <form action="{{ path('paiement', {'id': id } ) }}" method="post">
-            {{ form_widget(form) }}
-            <input type="submit"/>
-        </form>
-    
+    <div class="containerstyle="background-image: url(\" {{ asset('bundles/MDPlanning/img/LeLouvre.png') }} \");background-position: top;background-repeat: no-repeat;background-size:cover;">
+        <section class="row">
+            <header class="col-sm-offset-2 col-sm-8">
+                    <h1>Veuillez choisir un mode de paiement</h1>
+                    <date class="col-sm-6">
+                        Date programmée de la visite : {{ commandeGlobale.dateReservation|date('d/m/Y') }}
+                    </date>
+                    <billets class="col-sm-6">
+                        Nombre de place : {{ commandeGlobale.nbBillets }} entrée(s)
+                    </billets>
+            </header>
+            <article class="row"">
+                <form action="{{ path('paiement', {'id': id } ) }}" method="post" class="col-sm-offset-2 col-sm-8">
+                    {{ form_widget(form) }}
+                    <input type="submit"/>
+                </form>
+            </article>  
+        </section>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {#<script type="text/javascript" src="{{ asset('bundles/occore/js/events2.js') }}"></script>#}
 {% endblock %}

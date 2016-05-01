@@ -1,0 +1,2 @@
+Image QR Code
+<img src="http://chart.apis.google.com/chart?cht=qr&chs=150x150&chl=Test">

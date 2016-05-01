@@ -79,9 +79,9 @@ jms_payment_core:
     secret: "%secret%"
     
 jms_payment_paypal:
-    username: marc.declercq-facilitator@laposte.net
-    password: AcPk_HdmlBEKqM23dyL0SIf2DZfVB0m6pi5GvZ97t8aaRzdCxE3TwLCZQhzDHr_UlDId7RJalC2exp3K
-    signature: EBfAvI5y_kTH_RUVKvRWZOFoEwQcc808QIQ2O8lVj-L_3RuYs8XO0LXltYFwrx2Ey8VSkqKLiMmwIq4L
+    username: marc.declercq-facilitator_api1.laposte.net
+    password: X4W7PJDEFESGU8M8
+    signature: AFcWxV21C7fd0v3bYYYRCpSSRl31AWRzuZQQoq8X6NiBDS66ofPTUP9Y
     debug: true
 
 jms_di_extra:
@@ -95,4 +95,9 @@ jms_di_extra:
             routeur: "@router"
         method_calls:
             setRouter: ["@Router"]
-            
+
+ruudk_payment_stripe:
+    api_key: sk_test_7G9pmYrQmTsyGnWrthLT5UjO
+    logger: true
+    methods:
+        - checkout

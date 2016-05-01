@@ -245,8 +245,6 @@ class CommandeGlobale
     public function setPaymentInstruction(\JMS\Payment\CoreBundle\Entity\PaymentInstruction $paymentInstruction = null)
     {
         $this->paymentInstruction = $paymentInstruction;
-
-        return $this;
     }
 
     /**
@@ -374,5 +372,14 @@ class CommandeGlobale
             $price+=$cout_tarif*$quantity;
         }
         return $price;
+    }
+    public function getDesc() {
+        $desc="Vous avez commandé :\n";
+        $desc+=$this->getNbBillets() + " billet(s) pour le louvre\n";
+        $desc+="Pour le "+$this->getDateReservation();
+        return $desc;
+    }
+    public function getOrderNumber() {
+        return $this->getSessionId();
     }
 }

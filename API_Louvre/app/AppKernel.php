@@ -26,6 +26,7 @@ class AppKernel extends Kernel
             new MDPlanningBundle\MDPlanningBundle(),
             new OC\CommandeBundle\OCCommandeBundle(),
             new OC\CoreBundle\OCCoreBundle(),
+            new Ruudk\Payment\StripeBundle\RuudkPaymentStripeBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

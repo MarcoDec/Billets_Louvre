@@ -28,30 +28,13 @@ class DefaultController extends Controller
      * @Route("/{id}", name="paiement")
      * @Template
      */
-    public function paymentAction($id=0) //id of the order
-    {   $commandeGlobale = new CommandeGlobale();
-     
-        $commandeGlobaleRepository= $this->em->getRepository('OCCommandeBundle:CommandeGlobale');
-        $commandeGlobale=$commandeGlobaleRepository->find($id);
-     
+    public function paymentAction(CommandeGlobale $commandeGlobale) //id of the order
+    {  
         $form = $this->getFormFactory()->create('jms_choose_payment_method', null, array(
             'amount'   => $commandeGlobale->getPrice(),
             'currency' => 'EUR',
             'default_method' => 'payment_paypal', // Optional
-            'predefined_data' => array()
-        ));
- 
-        if ('POST' === $this->request->getMethod()) {
-            $form->handleRequest($this->request);
-            $commandeGlobale = new CommandeGlobale();
-            $this->em->persist($commandeGlobale);
-            $this->em->flush($commandeGlobale);
- 
-            $form = $this->getFormFactory()->create('jms_choose_payment_method', null, array(
-                'amount'   => $commandeGlobale->getPrice(),
-                'currency' => 'EUR',
-                'default_method' => 'payment_paypal', // Optional
-                'predefined_data' => array(
+            'predefined_data' => array(
                     'paypal_express_checkout' => array(
                         'return_url' => $this->router->generate('payment_complete', array(
                             'id' =>$commandeGlobale->getId()
@@ -60,9 +43,13 @@ class DefaultController extends Controller
                             'id' => $commandeGlobale->getId()
                         ), true)
                     ),
-                ),
-            ));
+                    'stripe_checkout' => array(
+                        'description' => 'My Product MD',
+                    ),
+            ),
+        ));
  
+        if ('POST' === $this->request->getMethod()) {
             $form->handleRequest($this->request);
  
     // Once the Form is validate, you update the order with payment instruction
@@ -73,19 +60,20 @@ class DefaultController extends Controller
                 $this->em->persist($commandeGlobale);
                 $this->em->flush($commandeGlobale);
                 // now, let's redirect to payment_complete with the order id
-                return new RedirectResponse($this->router->generate('payment_complete', array('id' => $commandeGlobale->getId() )));
+                return new RedirectResponse($this->router->generate('payment_complete', array('id' => $commandeGlobale->getId(), )));
             }
         }
-        return $this->render('OCCommandeBundle:Default:index.html.twig',array('form' => $form->createView() , 'id' => $id));
+        return $this->render('OCCommandeBundle:Default:index.html.twig',array('form' => $form->createView() , 'id' => $commandeGlobale->getId(), 'commandeGlobale' => $commandeGlobale));
     }
     
 /**
      * @Route("/complete/{id}", name = "payment_complete")
      */
-    public function completeAction($id=0) // id of the order
+    public function completeAction(CommandeGlobale $commandeGlobale) 
     {
-        if ( $id != 0 ){
-            $commandeGlobale = $this->getDoctrine()->getRepository("OCCommandeBundle:CommandeGlobale")->find($id);}
+        
+        /**if ( $id != 0 ){
+            $commandeGlobale = $this->getDoctrine()->getRepository("OCCommandeBundle:CommandeGlobale")->find($id);}*/
  
         $instruction = $commandeGlobale->getPaymentInstruction();
         if (null === $pendingTransaction = $instruction->getPendingTransaction()) {
@@ -124,4 +112,5 @@ class DefaultController extends Controller
        return $this->render('OCCommandeBundle:Paiement:cancel.html.twig',array('order'=>$commandeGlobale ));
         //return $this->redirect($this->generateUrl('OCCommandeBundle:Paiement:cancel.html.twig'));
     }
+    
 }
