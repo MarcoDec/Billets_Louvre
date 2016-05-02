@@ -1,0 +1,62 @@
+/**
+    Codes couleurs
+        Orange:
+            Fond :      #FF6A00     255, 106, 0
+            Clair:      #FFA463     255, 164, 99
+            mi-clair:   #FF8B39     255, 139, 57
+            mi-foncé:   #C55200     197, 82, 0
+            foncé:      #9B4000     155, 64, 0
+        Bleu:
+            Fond :      #00A08A     0, 160, 138
+            Clair:      #48B8A8     72, 184, 168
+            mi-clair:   #25A694     37, 166, 148
+            mi-foncé:   #007C6B     0, 124, 107
+            foncé:      #006154     0, 97, 84
+*/
+
+header {
+    background-color: #00A08A;
+    color: white;
+    border-radius: 5px 5px 10px 10px;
+    text-align: center; 
+}
+
+
+article {
+    padding: 0px;
+    background-color: rgba(37, 166, 148, 0.5);
+    border: 3px #006154 solid;
+}
+
+
+
+.next {
+    position:relative;
+    float: right;
+}
+.before {
+    position:relative;
+    float: left;
+}
+.before > span, .next > span {
+    color: #9B4000;
+    font-size: 8em;
+}
+.before > span:hover, .next > span:hover {
+    color: #C55200;
+    font-size: 8em;
+}
+
+section {
+    background-color: rgba(0,124,107,0.8);
+    color:white;
+}
+
+h4.error {
+    background-color: #C55200;
+    color: white;
+}
+h4.success {
+    background-color: white;
+    color: #00A08A;
+}

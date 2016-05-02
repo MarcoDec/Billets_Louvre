@@ -1,0 +1,92 @@
+/**
+    Codes couleurs
+        Orange:
+            Fond :      #FF6A00     255, 106, 0
+            Clair:      #FFA463     255, 164, 99
+            mi-clair:   #FF8B39     255, 139, 57
+            mi-foncé:   #C55200     197, 82, 0
+            foncé:      #9B4000     155, 64, 0
+        Bleu:
+            Fond :      #00A08A     0, 160, 138
+            Clair:      #48B8A8     72, 184, 168
+            mi-clair:   #25A694     37, 166, 148
+            mi-foncé:   #007C6B     0, 124, 107
+            foncé:      #006154     0, 97, 84
+*/
+.container {
+    background-repeat: false;
+    background-position: top;
+}
+header {
+    background-color: #00A08A;
+    color: white;
+    border-radius: 5px 5px 10px 10px;
+    text-align: center; 
+}
+
+#accordion {
+    /*border: 3px #006154 solid;*/
+    border-radius: 20px;
+}
+article {
+    padding: 0px;
+    background-color: rgba(37, 166, 148, 0.5);
+    border: 3px #006154 solid;
+}
+table {
+    text-align: center;
+    border: 1px white solid;
+    width: 100%;
+}
+input {
+   width:100%;
+}
+select {
+    width:33%;
+}
+
+.next {
+    position:relative;
+    float: right;
+}
+.before {
+    position:relative;
+    float: left;
+}
+.before > span, .next > span {
+    color: #9B4000;
+    font-size: 8em;
+}
+.before > span:hover, .next > span:hover {
+    color: #C55200;
+    font-size: 8em;
+}
+
+date, billets {
+    color: #006154;
+    text-align: center;
+}
+
+.customer {
+    background-color: #FF6A00;
+    border:2px #9B4000 solid;
+    
+}
+.panel-default>.panel-heading {
+    background-color: #25A694;
+    color: white;
+    border-radius: 20px;
+}
+.panel-default {
+    border: 2px #006154 solid;
+    
+}
+.error {
+    /*background-color: white; /*#C55200*/
+    color: red;
+}
+.myhead {
+    position:relative;
+    float:right;
+    background-color: yellow;
+}

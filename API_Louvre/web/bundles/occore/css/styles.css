@@ -1,0 +1,173 @@
+/**
+    Codes couleurs
+        Orange:
+            Fond :      #FF6A00     255, 106, 0
+            Clair:      #FFA463     255, 164, 99
+            mi-clair:   #FF8B39     255, 139, 57
+            mi-foncé:   #C55200     197, 82, 0
+            foncé:      #9B4000     155, 64, 0
+        Bleu:
+            Fond :      #00A08A     0, 160, 138
+            Clair:      #48B8A8     72, 184, 168
+            mi-clair:   #25A694     37, 166, 148
+            mi-foncé:   #007C6B     0, 124, 107
+            foncé:      #006154     0, 97, 84
+*/
+
+header {
+    background-color: #00A08A;
+    color: white;
+    border-radius: 5px 5px 10px 10px;
+    text-align: center; 
+
+}
+img {
+    width:100%;
+}
+
+.lowPadding {
+    padding:0px;
+}
+
+
+
+tarif, plus, moins, people, desc  {
+    font-size: 1em;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+plus, moins, people, tete {
+    font-size:1.5em;
+    display:block;
+    width:100%;
+}
+
+people {
+    background-color: white;
+    color: black;
+    display:block;
+    width:100%;
+}
+
+tarif {
+    position: relative;
+    display:block;
+}
+
+nbillets, prix {
+    margin:0px;
+    font-size: 1em;
+    margin-top: 5px;
+    color: white;
+}
+desc {
+    font-weight: normal;
+    font-style:italic;
+    color : #48B8A8; /*72, 184, 168*/
+    display: block; 
+    height: 45px;
+}
+
+.tarif {
+    padding: 5px;
+}
+article {
+    background-color: rgba(0,124,107,0.8);  /* #007C6B  0, 124, 107*/
+    border:1px #007C6B solid;   /*0, 124, 107*/
+    font-size: x-small;
+    position: relative;
+    display: block;
+    height: 108px;
+    box-sizing: border-box;
+    margin:5px;
+    padding:2px;
+}
+article:hover {
+    background-color: #006154;  /*0, 97, 84*/
+    border:1px white solid;
+}
+
+plus:hover, moins:hover {
+    background-color: #9B4000;  /*155, 64, 0*/
+}
+
+section > div {
+    background-color:rgba(255,106,0,0.7);   /* #FF6A00     255, 106, 0*/
+}
+
+table {
+    margin-left:50px;
+    
+}
+
+table, tr, td, th, table select {
+    color:#9B4000;
+    border: 1px solid #006154;  /*  155, 64, 0*/
+    border-collapse: collapse;
+    text-align: center;
+    background-color: #FF6A00;   /* #C55200 197, 82, 0*/
+}
+table select, td input, th input {
+    width:100%;
+    height: 100%;
+    border: 0px;
+    text-align: center;
+    color:#9B4000;
+    background-color:#FF6A00);   /*197, 82, 0*/
+}
+legend {
+    background-color:#FF6A00;   /*255, 106, 0*/
+    margin-bottom: 5px;
+    color: white;
+    text-align: center;
+}
+
+th {
+    color:#006154;
+}
+.info {
+    font-size: 0.8em;
+    font-style: italic;
+    color:white;
+}
+table {
+    margin:0;
+}
+#oc_commandebundle_CommandeGlobale_Reserver {
+    background-color: #FFA463;  /*255, 164, 99*/
+    border: 1px #FF8B39 solid;  /*255, 139, 57*/
+    border-style: outset;    
+}
+#oc_commandebundle_CommandeGlobale_Reserver:hover {
+    background-color: #FF8B39;  /*255, 139, 57*/
+    font-weight: bold;
+}
+.row {
+    margin:0px;
+    padding:0px;
+}
+
+.next {
+    position:relative;
+    float: right;
+}
+
+.before > span, .next > span {
+    color: #9B4000;
+    font-size: 8em;
+}
+.next > span:hover {
+    color: #C55200;
+    font-size: 8em;
+}
+
+.container-fluid {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+}
+span.input-group-addon {
+    background-color: #FF6A00;
+    color:#006154;
+}

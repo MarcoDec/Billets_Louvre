@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container" style="background-image: url({{asset('bundles/MDPlanning/img/LeLouvre.png')}});background-position: top;background-repeat: no-repeat;background-size:cover;">
+    <div class="container" >
             {{ form_start(form, {'method': 'POST'}) }}
             <aside class="row">
                     <header class="col-sm-offset-2 col-sm-8">
@@ -90,12 +90,8 @@
                     </section>
             </aside>
             <div class="row">
-                <before class='col-sm-2'>
-                    <a href='{{ url('etape_1') }}'>
-                    <span class="glyphicon glyphicon glyphicon glyphicon-chevron-left"></span></a>
-                </before>
-                <customer class="col-sm-8 lowPadding">
-                    <div class="form-inline">
+                <div class="col-sm-offset-2 col-sm-8 lowPadding">
+                    <div class="form-inline row customer">
                         {% if form.client.nom.vars.valid==false %}
                             {% set xx_div_nom = "form-group has-error has-feedback" %}
                             {% set xx_span_nom = "glyphicon glyphicon-remove form-control-feedback" %}   
@@ -157,11 +153,19 @@
                             </div>
                         </div>
                     </div>
-                </customer>
-                <next class='col-sm-2'>
-                    <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                </next>
+
+                    <div class="row">
+                        <a class='before' href='{{ url('etape_1') }}'>
+                            <span class="glyphicon glyphicon glyphicon glyphicon-chevron-left"></span></a>
+                        </a>
+                        <a href="#" class="next">
+                            <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                        </a>
+                    </div>
+
+                </div>
             </div>
+
             {{ form_widget(form._token) }}
             {{ form_end(form, {'render_rest': false}) }}
     </div>

@@ -1,0 +1,68 @@
+{% extends '::base.html.twig' %}
+{% block title %}LeLouvre - Choix Méthode de paiement {% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/occore/css/styles3.css') }}" />
+{% endblock %}
+{% block body %}
+    <div class="container" >
+        <div class="row">
+            <aside class="col-sm-offset-2 col-sm-8">
+                <header>
+                    <h1>Choississez votre moyen de paiement</h1>
+                </header>
+            </aside>
+            <section class="col-sm-offset-2 col-sm-8">
+                <h3>Récapitulatif de votre commande</h1>
+                <p>
+                    Date programmée de la visite : {{ commande.dateReservation|date('d/m/Y') }}<br>
+                    Nombre de place : {{ commande.nbBillets }} entrée(s)
+                </p>
+                {% for key, detail in commande.commandes if detail.getQuantity() > 0 %}
+                <h4>{{ detail.getQuantity() }} Billet(s) {{ detail.tarif.getTarifKey() }} </h3>
+                <p>
+                    {% for key, visiteur in detail.visiteurs %}
+                        {{ visiteur.prenom}} {{ visiteur.nom }}<br> 
+                    {% endfor %}
+
+                </p>
+                {% endfor %}
+                <h4>Coût total : {{ commande.getPrice() }} € </h4>
+            </section>
+            <div  class="col-sm-offset-2 col-sm-8">
+                <form action="{{ path('modes_payment', {'id': commande.id}) }}" method="POST"  class="col-sm-6">
+                  <script
+                    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                    data-key="pk_test_SLnCIww2u5HENd1UVOLE9SZr"
+                    data-amount="{{ commande.getAmount() }}"
+                    data-name="MD&Co"
+                    data-description="Commande Le Louvre"
+                    data-image="{{ asset('bundles/occore/img/miniLouvre.png') }}"
+                    data-locale="auto"
+                    data-zip-code="true"
+                    data-currency="eur">
+                  </script>
+                </form>
+            </div>
+            <div class="col-sm-offset-2 col-sm-8">
+                <a class='before' href='{{ path('etape_2', {'id': commande.id}) }}'>
+                    <span class="glyphicon glyphicon glyphicon glyphicon-chevron-left"></span></a>
+                </a>
+                <a href="#" class="next">
+                    <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <h4 class="col-sm-offset-2 col-sm-8">Espion: Token : {{ spy }}</h4>
+            <h4 class="col-sm-offset-2 col-sm-8 error">Erreurs : {{ err }}</h4>
+            <h4 class="col-sm-offset-2 col-sm-8 success">Succès : {{ succ }}</h4>
+        </div>
+    <div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script type="text/javascript" src="{{ asset('bundles/occore/js/events3.js') }}"></script>
+{% endblock %}

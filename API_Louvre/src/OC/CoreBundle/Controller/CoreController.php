@@ -110,14 +110,13 @@ class CoreController extends Controller
                 }
                 $em->flush();
                 
-                /*$url = $this->get('router')->generate( 'etape_2', array(
-                    'id' => $commandeGlobale->getId())
-                              );*/
-                /*eturn new RedirectResponse($url);*/
-                $url = $this->get('router')->generate( 'paiement', array(
+                $url = $this->get('router')->generate( 'modes_payment', array('id' => $commandeGlobale->getId()));
+                return new RedirectResponse($url);
+                
+                /*$url = $this->get('router')->generate( 'paiement', array(
                     'id' => $commandeGlobale->getId())
                               );
-                return new RedirectResponse($url);
+                return new RedirectResponse($url);*/
             }
         } else { // GET
             foreach ($commandeGlobale->getCommandes() as $commande ) {
@@ -161,4 +160,56 @@ class CoreController extends Controller
              'form'=>$form->createView())
             );
     }
+
+
+    /**
+    * @Route("/Paiement/{id}", name="modes_payment")
+    */
+    public function paiementAction(Request $request, $id)  {
+        $CommandeGlobale = new CommandeGlobale();
+        $em = $this->getDoctrine()->getManager(); 
+        $CommandeGlobaleRepository = $em->getRepository('OCCommandeBundle:CommandeGlobale');
+        $commandeGlobale=$CommandeGlobaleRepository->find($id);
+        $token="tuto va bene";
+        $err="";
+        $succ="";
+
+        // On vérifie que l'ID de session de la commande correspond bien à l'Id de session de la personne
+        if ($request->getSession()->getId()!=$commandeGlobale->getSessionId()) {
+            throw $this->createNotFoundException("La page que vous demandez est indisponible. >(");
+        }
+
+        if ($request->isMethod('POST')) { 
+
+            \Stripe\Stripe::setApiKey($this->container->getParameter('stripe_secret_key'));
+            $token=$request->request->get('stripeToken');
+            try {
+              $charge = \Stripe\Charge::create(array(
+                "amount" => $commandeGlobale->getAmount(), // amount in cents, again
+                "currency" => "eur",
+                "source" => $token,
+                "description" => $commandeGlobale->getDesc(),
+                ));
+              $succ="Réussite";
+            } catch(\Stripe\Error\Card $e) {
+                // Ici on renvoie vers une erreur sur la page de paiement avec le détail de l'erreur
+                $err="L'erreur suivante est arrivée. Le paiement n'a pas pu être effectué.<br>".$e->__toString();
+
+            }
+            // Ici on mémorise dans la base que la commande a bien été payé, puis on construit les billets PDF pour envoie par mail ensuite.
+
+        } 
+                    return $this->render('OCCoreBundle:Default:paymentChoice.html.twig', 
+                             array(
+                                 'id'=>$id,
+                                 'commande' => $commandeGlobale,
+                                 'spy' => $token,
+                                 'err' => $err,
+                                 "succ" => $succ,
+
+                             )
+                            );
+        }
+
+
 }

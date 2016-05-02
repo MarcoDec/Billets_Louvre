@@ -9,16 +9,19 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container-fluid" style="background-image: url({{asset('bundles/MDPlanning/img/LeLouvre.png')}});background-position: top;background-repeat: no-repeat;background-size:cover;">
+    <div class="container-fluid" >
             <div class="row">
                 {{ form_start(form2, {'method': 'POST'}) }}  
-                <div class="col-md-offset-1 col-md-10 col-sm-11">
+                <div class="col-sm-offset-2 col-sm-8">
                     <div class="row">
-                        <aside class="col-xm-12 col-md-5">
+                        <aside>
+                            <header class="row">
+                                    <h1>Veuillez sélectionner le nombre de place au tarif souhaité</h1>
+                            </header>
                             <div class="row">
                                 {% for key, tarif in tarifs %}
                                     {# On Récupère si besoin les valeurs des quantités déjà réservées #}
-                                    <div class='col-xs-6 col-sm-4 col-lg-3 lowPadding'>
+                                    <div class='col-xs-6 col-sm-4 col-lg-2 lowPadding'>
                                         <article>
                                             <!-- Tarif -->
                                             <tarif class="col-xs-12 lowPadding">Tarif {{tarif.getTarifKey()|upper}}</tarif>
@@ -63,11 +66,11 @@
                                             </div>
                                         </article>
                                     </div>
-                            {% endfor %}
-                        </div>
+                                {% endfor %}
+                            </div>
                         </aside>
-                        {#<div class="col-md-1 hidden-xs hidden-sm"></div>#}
-                        <section class="col-xm-10 col-md-6 lowPadding">
+
+                        <section>
                             <div class="row">
                                 <legend><span class="glyphicon glyphicon-shopping-cart"></span> VOTRE COMMANDE</legend>
                             </div>
@@ -135,9 +138,11 @@
                                 {#{{  form_widget( form2.Reserver, {'attr': {'class' : 'total'} } ) }}#}
                             </div>
                        </section>
-                        <next class='col-xm-1 col-md-1 lowPadding'>
+                    </div>
+                    <div class="row">
+                        <a href="#" class="next">
                             <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                        </next>
+                        </a>
                     </div>
                 </div>
 

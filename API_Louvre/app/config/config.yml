@@ -79,9 +79,9 @@ jms_payment_core:
     secret: "%secret%"
     
 jms_payment_paypal:
-    username: marc.declercq-facilitator_api1.laposte.net
-    password: X4W7PJDEFESGU8M8
-    signature: AFcWxV21C7fd0v3bYYYRCpSSRl31AWRzuZQQoq8X6NiBDS66ofPTUP9Y
+    username: "%paypal_username%"
+    password: "%paypal_password%"
+    signature: "%paypal_signature%"
     debug: true
 
 jms_di_extra:

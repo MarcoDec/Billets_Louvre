@@ -79,12 +79,26 @@ class CommandeGlobale
     */
     private $client;
     
+
+    /**
+    * @ORM\Column(name="stripe", type="boolean", nullable=true)
+    */
+    private $stripe;
+
+    /**
+    * @ORM\Column(name="paid", type="boolean", nullable=true)
+    */
+    private $paid;
+
+
     public function __construct() {
         $this->dateReservation = new \Datetime();
         $this->demiJournee = false;
         $this->nbBillets = 0;
         $this->date_commande = new \Datetime();
         $this->commandes=new ArrayCollection();
+        $this->stripe=false;
+        $this->paid=false;
     }
     
     public function validate(ExecutionContextInterface $context) {
@@ -373,10 +387,21 @@ class CommandeGlobale
         }
         return $price;
     }
+
+    public function getAmount() {
+        $price=0;
+        foreach ($this->commandes as $commande_tarif) {
+            $cout_tarif = $commande_tarif->getTarif()->getCout();
+            $quantity = $commande_tarif->getQuantity();
+            $price+=$cout_tarif*$quantity;
+        }
+        return $price*100;
+    }
+
     public function getDesc() {
         $desc="Vous avez commandé :\n";
         $desc+=$this->getNbBillets() + " billet(s) pour le louvre\n";
-        $desc+="Pour le "+$this->getDateReservation();
+        $desc+="Pour le "+$this->getDateReservation()->format('Y-m-d H:i:s');
         return $desc;
     }
     public function getOrderNumber() {
