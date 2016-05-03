@@ -190,13 +190,19 @@ class CoreController extends Controller
                 "source" => $token,
                 "description" => $commandeGlobale->getDesc(),
                 ));
+              $commandeGlobale->setStripe(true);
+              $commandeGlobale->setPaid(true);
               $succ="Réussite";
             } catch(\Stripe\Error\Card $e) {
                 // Ici on renvoie vers une erreur sur la page de paiement avec le détail de l'erreur
                 $err="L'erreur suivante est arrivée. Le paiement n'a pas pu être effectué.<br>".$e->__toString();
-
+                $commandeGlobale->setStripe(true);
+                $commandeGlobale->setPaid(false);
             }
-            // Ici on mémorise dans la base que la commande a bien été payé, puis on construit les billets PDF pour envoie par mail ensuite.
+            // Ici on mémorise dans la base l'état de la commande a bien été payé, puis on construit si besoin les billets PDF pour envoi par mail ensuite.
+            $em->persist($commandeGlobale);
+            $em->flush();
+            
 
         } 
                     return $this->render('OCCoreBundle:Default:paymentChoice.html.twig', 

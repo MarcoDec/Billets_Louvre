@@ -29,6 +29,8 @@
                 {% endfor %}
                 <h4>Coût total : {{ commande.getPrice() }} € </h4>
             </section>
+            {% if commande.getPaid() %}
+            {% else %}
             <div  class="col-sm-offset-2 col-sm-8">
                 <form action="{{ path('modes_payment', {'id': commande.id}) }}" method="POST"  class="col-sm-6">
                   <script
@@ -44,6 +46,7 @@
                   </script>
                 </form>
             </div>
+            {% endif %}
             <div class="col-sm-offset-2 col-sm-8">
                 <a class='before' href='{{ path('etape_2', {'id': commande.id}) }}'>
                     <span class="glyphicon glyphicon glyphicon glyphicon-chevron-left"></span></a>
@@ -54,7 +57,6 @@
             </div>
         </div>
         <div class="row">
-            <h4 class="col-sm-offset-2 col-sm-8">Espion: Token : {{ spy }}</h4>
             <h4 class="col-sm-offset-2 col-sm-8 error">Erreurs : {{ err }}</h4>
             <h4 class="col-sm-offset-2 col-sm-8 success">Succès : {{ succ }}</h4>
         </div>
