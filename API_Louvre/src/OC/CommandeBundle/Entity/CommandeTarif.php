@@ -133,7 +133,7 @@ class CommandeTarif
         return $this->tarif;
     }
 
-    public function setVisiteurs(ArrayCollection $visiteurs) {
+    public function setVisiteurs( $visiteurs) {
         $this->visiteurs = $visiteurs;
     }
     
@@ -167,7 +167,16 @@ class CommandeTarif
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getVisiteurs()
-    {
+    {  
         return $this->visiteurs;
+    }
+
+    public function toString() {
+        $mess="<br>    ---> Quantité :".strval($this->quantity)
+        ."<br>    ---> CommandeGlobale de référence :".strval($this->commande_Globale->getId())
+        ."<br>    ---> Tarif :".$this->tarif->getTarifKey()
+        ."<br>    ---> Nombre de visiteurs : ".strval(count($this->visiteurs));
+
+        return $mess;
     }
 }

@@ -74,7 +74,6 @@
                             <div class="row">
                                 <legend><span class="glyphicon glyphicon-shopping-cart"></span> VOTRE COMMANDE</legend>
                             </div>
-                            <div class="row error">{{ form_errors(form2) }}</div>  
                             <div class="row">
                                 <div class="col-xs-8 lowPadding">
                                     {{ form_widget(form2.dateReservation) }}
@@ -137,11 +136,14 @@
                                 </table>
                                 {#{{  form_widget( form2.Reserver, {'attr': {'class' : 'total'} } ) }}#}
                             </div>
+                            {% if formErrors|length > 0 %}
+                                <div class="row alerte"><h2><span class="glyphicon glyphicon-warning-sign"></span> {{ form_errors(form2) }}</div>
+                            {% endif %}
                        </section>
                     </div>
                     <div class="row">
                         <a href="#" class="next">
-                            <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                            <span class="glyphicon glyphicon-chevron-right"></span>
                         </a>
                     </div>
                 </div>

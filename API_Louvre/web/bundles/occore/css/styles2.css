@@ -90,3 +90,10 @@ date, billets {
     float:right;
     background-color: yellow;
 }
+.alerte {
+    background-color: white;
+    color: red;
+    text-align: left;
+    border: 3px red solid;
+    border-radius: 10px;
+}

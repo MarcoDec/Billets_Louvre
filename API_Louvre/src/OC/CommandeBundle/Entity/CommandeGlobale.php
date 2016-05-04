@@ -7,6 +7,7 @@ use JMS\Payment\CoreBundle\Entity\PaymentInstruction;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use OC\CommandeBundle\Entity\CommandeTarif;
 
 /**
  * CommandeGlobale
@@ -58,11 +59,6 @@ class CommandeGlobale
     private $date_commande;         // Rempli à l'étape 1
     
     /**
-    * @ORM\OneToOne(targetEntity="JMS\Payment\CoreBundle\Entity\PaymentInstruction")
-    */
-    private $paymentInstruction;
-    
-    /**
      * @var string
      *
      * @ORM\Column(name="sessionId", type="string", length=255, nullable=true)
@@ -88,7 +84,7 @@ class CommandeGlobale
     /**
     * @ORM\Column(name="paid", type="boolean", nullable=true)
     */
-    private $paid;
+    public $paid;
 
 
     public function __construct() {
@@ -250,28 +246,6 @@ class CommandeGlobale
     }
 
     /**
-     * Set paymentInstruction
-     *
-     * @param \JMS\Payment\CoreBundle\Entity\PaymentInstruction $paymentInstruction
-     *
-     * @return CommandeGlobale
-     */
-    public function setPaymentInstruction(\JMS\Payment\CoreBundle\Entity\PaymentInstruction $paymentInstruction = null)
-    {
-        $this->paymentInstruction = $paymentInstruction;
-    }
-
-    /**
-     * Get paymentInstruction
-     *
-     * @return \JMS\Payment\CoreBundle\Entity\PaymentInstruction
-     */
-    public function getPaymentInstruction()
-    {
-        return $this->paymentInstruction;
-    }
-
-    /**
      * Set sessionId
      *
      * @param string $sessionId
@@ -409,6 +383,23 @@ class CommandeGlobale
     }
 
     /**
+    * Cette fonction initalise les items de la commande pour chacun des tarifs existant dans la base
+    * les quantités sont évidemment initialisée à 0
+    */
+    public function initCommandes($control) {
+        // On initialise les commandes
+        $tarifsRepository= $control->getDoctrine()->getManager()->getRepository('OCCommandeBundle:Tarif');
+        $list_tarifs=$tarifsRepository->findAll();
+        foreach($list_tarifs as $tarif) {
+            $commande_tarif=new CommandeTarif();
+            $commande_tarif->setCommandeGlobale($this);
+            $commande_tarif->setTarif($tarif);
+            $commande_tarif->setQuantity(0);
+            $this->addCommande($commande_tarif);
+        }
+    }
+
+    /**
      * Set stripe
      *
      * @param boolean $stripe
@@ -418,7 +409,6 @@ class CommandeGlobale
     public function setStripe($stripe)
     {
         $this->stripe = $stripe;
-
         return $this;
     }
 
@@ -442,7 +432,6 @@ class CommandeGlobale
     public function setPaid($paid)
     {
         $this->paid = $paid;
-
         return $this;
     }
 
@@ -454,5 +443,25 @@ class CommandeGlobale
     public function getPaid()
     {
         return $this->paid;
+    }
+
+    public function isPaid() {
+        return (($this->paid) ? 'Payé' : 'Non payé');
+    }
+
+    public function toString() {
+        $mess="####### CommandeGlobale n°".strval($this->id)
+        ."<br>   Date Réservation : ".($this->dateReservation->format('Y-m-d H:i:s'))
+        ."<br>   Demi-journée : ".(($this->demiJournee) ? 'true' : 'false')
+        ."<br>   Nombre de billet : ".strval($this->nbBillets)
+        ."<br>   Id Session : ".$this->sessionId
+        ."<br>   Etat paiement : ".(($this->paid) ? 'true' : 'false')
+        ."<br>   Nombre d'items commande_tarif :".strval(count($this->commandes));
+        if (count($this->commandes)!=0) {
+            foreach ($this->commandes as $key => $commande) {
+                $mess=$mess.'<br>-------------------------'.($commande->toString()).'<br>-------------------------';
+            }
+        }
+        return $mess;
     }
 }

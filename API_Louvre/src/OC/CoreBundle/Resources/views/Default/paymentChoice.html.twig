@@ -47,19 +47,24 @@
                 </form>
             </div>
             {% endif %}
+            <div class="row">
+                {% if err != '' %}
+                    <h4 class="col-sm-offset-2 col-sm-8 error">{{ err }}</h4>
+                {% endif %}
+                {% if succ !='' %}
+                    <h4 class="col-sm-offset-2 col-sm-8 success">{{ succ|raw }}</h4>
+                {% endif %}
+            </div>
             <div class="col-sm-offset-2 col-sm-8">
                 <a class='before' href='{{ path('etape_2', {'id': commande.id}) }}'>
                     <span class="glyphicon glyphicon glyphicon glyphicon-chevron-left"></span></a>
                 </a>
-                <a href="#" class="next">
+                {#<a href="#" class="next">
                     <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                </a>
+                </a>#}
             </div>
         </div>
-        <div class="row">
-            <h4 class="col-sm-offset-2 col-sm-8 error">Erreurs : {{ err }}</h4>
-            <h4 class="col-sm-offset-2 col-sm-8 success">Succès : {{ succ }}</h4>
-        </div>
+
     <div>
 {% endblock %}
 

@@ -171,3 +171,11 @@ span.input-group-addon {
     background-color: #FF6A00;
     color:#006154;
 }
+
+.alerte {
+    background-color: white;
+    color: red;
+    text-align: left;
+    border: 3px red solid;
+    border-radius: 10px;
+}

@@ -153,7 +153,9 @@
                             </div>
                         </div>
                     </div>
-
+                    {% if formErrors|length > 0 %}
+                        <div class="row alerte"><h2><span class="glyphicon glyphicon-warning-sign"></span> {{ form_errors(form) }}</h2></div>
+                    {% endif %}
                     <div class="row">
                         <a class='before' href='{{ url('etape_1') }}'>
                             <span class="glyphicon glyphicon glyphicon glyphicon-chevron-left"></span></a>
