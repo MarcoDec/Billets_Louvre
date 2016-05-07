@@ -16,6 +16,7 @@ use OC\CommandeBundle\Form\CommandeTarifType;
 use OC\CommandeBundle\Form\TarifType;
 use OC\CommandeBundle\Entity\Tarif;
 use OC\CoreBundle\Entity\User;
+use OC\CoreBundle\Entity\Mylog;
 
 class CoreController extends Controller
 {
@@ -46,7 +47,7 @@ class CoreController extends Controller
                             $em->persist($newUser); // on le persiste
                             $commande->addVisiteur($newUser); // on l'ajoute à la commande
                         }
-                        
+
                     } else if (count($commande->getVisiteurs()) > $total_visiteurs) {
                         // On supprime les champs visiteur en trop en partant de la fin
                         $nb_supp=count($commande->getVisiteurs()) - $total_visiteurs; // nombre de champ à supprimer
@@ -158,7 +159,6 @@ class CoreController extends Controller
         if ($commande_globale->getPaid()) {
             $url = $this->get('router')->generate( 'etape_1', array());
             return new RedirectResponse($url);
-            break;
         } 
         
         // On vérifie que l'ID de session de la commande correspond bien à l'Id de session de la personne
@@ -204,6 +204,17 @@ class CoreController extends Controller
     }
 
 
+    private function sendMail($commande_globale) {
+        $message = \Swift_Message::newInstance()
+                ->setSubject('[Le Louvre] Vos Billets')
+                ->setFrom(array($this->container->getParameter('mailer_user') => 'Le Louvre - Service Client'))
+                ->setTo($commande_globale->getClient()->getEmail())
+                ->setContentType("text/html")
+                ->setBody("<p><strong>Bonjour</strong><br>Merci d'avoir commandé des billets pour le Louvre sur notre site.<br>".$commande_globale->toString($this)."<br>Veuillez trouver ci-joint vos billets</p>");
+        $mailer= $this->get('mailer');
+        $mailer->send($message);
+    }
+
     /**
     * @Route("/Commande/Paiement/{id}", name="modes_payment")
     */
@@ -221,7 +232,7 @@ class CoreController extends Controller
             throw $this->createNotFoundException("La page que vous demandez est indisponible. >(");
         }
 
-        if ($commande_globale->isPaid()) {
+        if ($commande_globale->getPaid()) {
             $succ="Cette commande a déjà été traitée.<br> Les billets vous ont été envoyés par email.";
         } elseif ($commande_globale->getAmount()==0) {
             // Il n'y a rien à payer (exemple que des billets Gratuit)
@@ -232,6 +243,7 @@ class CoreController extends Controller
             $em->flush();
             $succ="La commande vient d'être traitée.<br>Les billets ont bien été envoyés sur votre email.<br>Merci pour votre confiance, et à bientôt !";
             // Dans ce cas, on créé les billets et on les envoie par mail.
+            $this->sendMail($commande_globale);
             // Et pour finir, on remercie le client
         } elseif ($request->isMethod('POST')) { 
             /************************************************
@@ -252,6 +264,7 @@ class CoreController extends Controller
               $commande_globale->setDateCommande(new \Datetime());
               $succ="Billets envoyés. Merci de votre confiance";
               // Ici on créera les billets et on les enverra par mail
+              $this->sendMail($commande_globale);
               // Ensuite on renverra vers la page de remerciement
             } catch(\Stripe\Error\Card $e) {
                 // Ici on renvoie vers une erreur sur la page de paiement avec le détail de l'erreur
@@ -271,10 +284,97 @@ class CoreController extends Controller
              'spy' => $token,
              'err' => $err,
              "succ" => $succ,
-
+             'business' => $this->container->getParameter('paypal_account')
          )
         ); 
         }
 
+    /**
+    * @Route("/Commande/ipn/", name="paypal_ipn")
+    */
+    public function ipnAction(Request $request)  {
+        //Réception notification de paypal, vérifications et si tout est ok validation
+        $mylog=new Mylog();
+        $mylog->add($this,'Requête IPN', 'début');
+        $email_account=$this->container->getParameter('paypal_account');
+        $logfile = $this->container->getParameter('logfile');
 
+        $req='cmd=_notify_validate';
+        foreach ($_POST as $key => $value) {
+            $value=urlencode(stripslashes($value));
+            $req.="&".$key."=".$value;
+        }
+        $header="POST /cgi-bin/webscr HTTP/1.0\r\n";
+        $header.="Content-Type: application/x-www-form-urlencoded\r\n";
+        $header.="Content-Length: ".strlen($req)."\r\n\r\n";
+        $fp=fsockopen('ssl://sandbox.paypal.com',443, $errno, $errstr, 30);
+
+        $item_name= $_POST['item_name'];
+        $item_number=$_POST['item_number'];
+        $payment_status = $_POST['payment_status'];
+        $payment_amount = $_POST['mc_gross'];
+        $payment_currency = $_POST['mc_currency'];
+        $txn_id=$_POST['txn_id'];
+
+        $receiver_email = $_POST['receiver_email'];
+        $payer_email = $_POST['payer_email'];
+        parse_str($_POST['custom'],$custom);
+
+        if (!$fp) {
+            $mylog->add($this,'pas de réponse fp', '');
+        } else {
+            fputs($fp, $header.$req);
+            while (!eof($fp)) {
+                $res = fget($fp,1024);;
+                if (strcmp($res, "VERIFIED")==0) {
+                    $mylog->add($this,'Données Paiements vérifiées', '');
+                    if ($payment_status == "Completed") {
+                        $mylog->add($this,'Paiement complété', '');
+                        if ($email_account == $receiver_email) {
+                            // vérifier que la somme est bonne
+                            $mylog->add($this,'test email OK', '');
+                            //file_put_contents('log', print_r($_POST, true)); // stockage post dans un fichier de log
+
+                        } else {
+                            $mylog->add($this,'test email KO', '');
+                        }
+                    } else {
+                        // Echec de paiement...
+                        $mylog->add($this,'Echec Paiement', '');
+                    }
+                } else if (strcmp($res, "INVALID")==0)  {
+                    $mylog->add($this,'Données Paiements invalides', '');
+                    //transaction non valide.
+                }
+            }
+        }
+        $mylog->add($this,'Requête IPN', 'fin');
+    }
+
+    /**
+    * @Route("/testlog/", name="test_log")
+    */
+    public function testlogAction() {
+        $mylog=new Mylog();
+        
+
+        $message = \Swift_Message::newInstance()
+        ->setSubject('Hello')
+        ->setFrom(array($this->container->getParameter('mailer_user') => 'Le Louvre - Service Client'))
+        ->setTo("marc.declercq@laposte.net")
+        ->setContentType("text/html")
+        //->setBody( $this->renderView('OCCommandeBundle:Emails:commande.html.twig')  );
+        ->setBody("<html><body><strong>Bonjour !</strong><br>Bienvenu(e) sur le site LeLouvre !<br>Merci de votre commande.</body></html>");
+        $mailer= $this->get('mailer');
+        $mailer->send($message);
+
+        $transport = $mailer->getTransport();
+        if ($transport instanceof Swift_Transport_SpoolTransport) {
+            $spool = $transport->getSpool();
+            $sent = $spool->flushQueue($this->get('swiftmailer.transport.real'));
+        }
+        $mylog->add($this,'Message test', serialize($message));
+
+        throw new \LogicException($mylog->getLog());
+    }
 }

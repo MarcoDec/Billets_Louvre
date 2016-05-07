@@ -172,11 +172,11 @@ class CommandeTarif
     }
 
     public function toString() {
-        $mess="<br>    ---> Quantité :".strval($this->quantity)
-        ."<br>    ---> CommandeGlobale de référence :".strval($this->commande_Globale->getId())
-        ."<br>    ---> Tarif :".$this->tarif->getTarifKey()
-        ."<br>    ---> Nombre de visiteurs : ".strval(count($this->visiteurs));
-
+        $mess="<br>   - ".strval(count($this->visiteurs)). ' visiteurs'
+        ." au Tarif ".$this->tarif->getTarifKey();
+        foreach ($this->getVisiteurs() as $key => $visiteur) {
+           $mess.='<br>      * '.$visiteur->getPrenom().' '.$visiteur->getNom();
+        }
         return $mess;
     }
 }

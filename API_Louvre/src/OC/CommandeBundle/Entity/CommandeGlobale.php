@@ -373,9 +373,9 @@ class CommandeGlobale
     }
 
     public function getDesc() {
-        $desc="Vous avez commandé :\n";
-        $desc+=$this->getNbBillets() + " billet(s) pour le louvre\n";
-        $desc+="Pour le "+$this->getDateReservation()->format('Y-m-d H:i:s');
+        $desc="Vous avez commandé ";
+        $desc.=$this->getNbBillets()." billet(s) pour le louvre ";
+        $desc.="pour le ".($this->getDateReservation()->format('Y-m-d H:i:s'));
         return $desc;
     }
     public function getOrderNumber() {
@@ -450,16 +450,17 @@ class CommandeGlobale
     }
 
     public function toString() {
-        $mess="####### CommandeGlobale n°".strval($this->id)
-        ."<br>   Date Réservation : ".($this->dateReservation->format('Y-m-d H:i:s'))
-        ."<br>   Demi-journée : ".(($this->demiJournee) ? 'true' : 'false')
-        ."<br>   Nombre de billet : ".strval($this->nbBillets)
-        ."<br>   Id Session : ".$this->sessionId
-        ."<br>   Etat paiement : ".(($this->paid) ? 'true' : 'false')
-        ."<br>   Nombre d'items commande_tarif :".strval(count($this->commandes));
+        $mess="CommandeGlobale n°".strval($this->id)
+        ."<br>Vous avez réservé pour le ".($this->dateReservation->format('Y-m-d'))
+        ." pour la ".(($this->demiJournee) ? 'demi-journée.' : 'journée complète')
+        .strval($this->nbBillets)." billet(s)."
+        ."Le paiement a ".(($this->paid) ? 'bien été effectuée.' : 'n\'est pas encore effectué.<br>');
         if (count($this->commandes)!=0) {
             foreach ($this->commandes as $key => $commande) {
-                $mess=$mess.'<br>-------------------------'.($commande->toString()).'<br>-------------------------';
+                if ($commande->getQuantity()!=0) {
+                    $mess=$mess.'<br>-------------------------'.($commande->toString()).'<br>-------------------------';
+                }
+                
             }
         }
         return $mess;

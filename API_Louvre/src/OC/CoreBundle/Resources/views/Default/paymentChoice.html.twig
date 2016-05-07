@@ -27,26 +27,42 @@
 
                 </p>
                 {% endfor %}
-                <h4>Coût total : {{ commande.getPrice() }} € </h4>
+                <h4 class="col-sm-6">Coût total : {{ commande.getPrice() }} € </h4>
+                {% if commande.getPaid() %}
+                {% else %}
+                    <form action="{{ path('modes_payment', {'id': commande.id}) }}" method="POST"  class="col-sm-3">
+                      <script
+                        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                        data-key="pk_test_SLnCIww2u5HENd1UVOLE9SZr"
+                        data-amount="{{ commande.getAmount() }}"
+                        data-name="MD&Co"
+                        data-description="Commande Le Louvre"
+                        data-image="{{ asset('bundles/occore/img/miniLouvre.png') }}"
+                        data-locale="auto"
+                        data-zip-code="true"
+                        data-currency="eur">
+                      </script>
+                    </form>
+                    <form action="https://sandbox.paypal.com/cgi-bin/webscr" method="post"  class="col-sm-3">
+                        <input name="amount" type="hidden" value="{{ commande.getPrice() }}"/>
+                        <input name="currency_code" type="hidden" value="EUR"/>
+                        <input name="shipping" type="hidden" value="0.00"/>
+                        <input name="tax" type="hidden" value="0.00"/>
+                        <input name="return" type="hidden" value="{{ url('modes_payment', {'id': commande.id}) }}"/>
+                        <input name="notify_url" type="hidden" value="{{ url('paypal_ipn', {'id': commande.id}) }}"/>
+                        <input name="cmd" type="hidden" value="_xclick"/>
+                        <input name="business" type="hidden" value="{{ business }}"/>
+                        <input name="item_name" type="hidden" value="Commande billets Le Louvre"/>
+                        <input name="no_note" type="hidden" value="1"/>
+                        <input name="lc" type="hidden" value="FR"/>
+                        <input name="bn" type="hidden" value="PP-BuyNowBF"/>
+                        <input name="custom" type="hidden" value="command_id={{ commande.id }}"/>
+                        <input name="amount" type="hidden" value=""/>
+                        <input type="submit" value="Pay with PayPal" class="btn btn-info btn-block">
+                    </form>
+                {% endif %}
             </section>
-            {% if commande.getPaid() %}
-            {% else %}
-            <div  class="col-sm-offset-2 col-sm-8">
-                <form action="{{ path('modes_payment', {'id': commande.id}) }}" method="POST"  class="col-sm-6">
-                  <script
-                    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                    data-key="pk_test_SLnCIww2u5HENd1UVOLE9SZr"
-                    data-amount="{{ commande.getAmount() }}"
-                    data-name="MD&Co"
-                    data-description="Commande Le Louvre"
-                    data-image="{{ asset('bundles/occore/img/miniLouvre.png') }}"
-                    data-locale="auto"
-                    data-zip-code="true"
-                    data-currency="eur">
-                  </script>
-                </form>
-            </div>
-            {% endif %}
+
             <div class="row">
                 {% if err != '' %}
                     <h4 class="col-sm-offset-2 col-sm-8 error">{{ err }}</h4>
