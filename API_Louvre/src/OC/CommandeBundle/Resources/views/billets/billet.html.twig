@@ -1,47 +1,23 @@
-<!DOCTYPE html>
-<html style="overflow:hidden;">
+<html>
     <head>
         <meta charset="UTF-8" />
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
-
         <style>
-                /**
-                Codes couleurs
-                    Orange:
-                        Fond :      #FF6A00     255, 106, 0
-                        Clair:      #FFA463     255, 164, 99
-                        mi-clair:   #FF8B39     255, 139, 57
-                        mi-foncé:   #C55200     197, 82, 0
-                        foncé:      #9B4000     155, 64, 0
-                    Bleu:
-                        Fond :      #00A08A     0, 160, 138
-                        Clair:      #48B8A8     72, 184, 168
-                        mi-clair:   #25A694     37, 166, 148
-                        mi-foncé:   #007C6B     0, 124, 107
-                        foncé:      #006154     0, 97, 84
-                */
             section {
-                width:700px;
+                width:600px;
                 border: 3px #FF6A00 solid;
                 border-radius: 10px;
                 margin:0px;
                 padding:0px;
-                /*background-image: url("{{ app.request.scheme ~'://' ~ app.request.httpHost ~ asset('bundles/occore/img/fond_billet.png') }}");*/
-                background : linear-gradient(to right top, white,#48B8A8, #25A694, #007C6B,#006154, #25A694,#48B8A8,white);
+                background-color : #25A694;
                 background-repeat: no-repeat;
                 background-size: contain;
             }
             img.qrcode {
-                position:relative;
                 height:100px;
                 width:120px;
-                right:0px;
-                bottom:0px;
+                position:relative;
+                float:right;
             }
-            aside {
-                text-align: right;
-            }
-
             img.logo {
                 position:relative;
                 height:100px;
@@ -52,67 +28,46 @@
             }
             h1 {
                 color: white;
+                display:inline-block;
+                vertical-align: top;
+                margin-left:10px;
+                margin-right:10px;
             }
             h3 {
                 text-align: center;
-            }
-            /*.row {
-                border: 1px green dashed;
-                padding:0px;
-                margin:0px;
-            }*/
-            .nopadding {
-                padding:0px;
-                margin:0px;
-            }
-            label{
-                float:right;
-                height:35px;
-                margin-top:10px;
-                margin-bottom:5px;
-                font-size: 1.2em;
-                text-align: right;
-            }
-            span.data {
                 display: inline-block;
-                background-color: #FF6A00;
-                color:white;
-                text-align: left;
-                font-size: 1.6em;
-                border: 1px white solid;
-                border-radius:10px;
-                height:35px;
-                margin-top:5px;
-                margin-bottom:5px;
-                vertical-align: center;
+                vertical-align: top;
+                float:right;
             }
-
+            div{
+                display: inline-block;
+                vertical-align: top;
+                height:80px;
+                padding:10px;
+            }
+            header, article { display:block;}
         </style>
     </head>
     <body>
         <section>
-            <div class="row nopadding">
-                <a href="http:/billetslelouvre.md-tools.xyz/web" class="col-sm-3 nopadding"><img src="{{ asset('bundles/occore/img/miniLouvre.png') }}" alt="Le Louvre" class="logo"/></a>
+            <header>
+                <a href="http:/billetslelouvre.md-tools.xyz/web" class="col-sm-3 nopadding"><img src="{{ app.request.getSchemeAndHttpHost() ~ asset('bundles/occore/img/miniLouvre.png') }}" alt="Le Louvre" class="logo"/></a>
                 <h1 class="col-sm-6 nopadding"> Musée du Louvre<br>Tarif {{ tarif }} </h1>
-                <h3 class="col-sm-3 nopadding">Entrée valable<br>pour le<br><strong>{{ dateReservation|date('d/m/Y') }}</strong></h3>
-            </div>
-            <div class="row nopadding">
-                <article class="col-sm-9 nopadding">
-                    <div class="row nopadding">
-                        <label class="col-sm-5">Nom : </label>
-                        <span class="col-sm-7 data">{{ nom|upper }}</span></div>
-                    <div class="row nopadding">
-                        <label class="col-sm-5">Prénom : </label>
-                        <span class="col-sm-7 data">{{ prenom }}</span>
-                    </div>
-                </article>
-                <div class='col-sm-1 nopadding'></div>
-                <aside class="col-sm-3 nopadding">
-                    <img src="http://qrickit.com/api/qr?d=http:/billetslelouvre.md-tools.xyz/web/commande/{{ id }};addtext={{  id }}_{{ id_visiteur }}&amp;txtcolor=000000&amp;fgdcolor=FFFFFF&amp;bgdcolor=FF6A00&amp;logotext=Le+Louvre&amp;qrsize=150&amp;t=p&amp;e=m" class="qrcode">
-                </aside>
-            </div>
+                <h3 class="col-sm-3 nopadding">Entrée valable pour<br>
+                    {% if demi_journee %}
+                        l'après-midi du
+                    {% else %}
+                        la journée du
+                    {% endif %}
+                    <br><strong>{{ dateReservation|date('d/m/Y') }}</strong></h3>
+            <header>
+            <article>
+                <div>
+                    <span>Nom : <strong>{{ nom|upper }}</strong></span><br>
+                    <span>Prénom : <strong>{{ prenom }}</strong></span>
+                </div>
+                <img src="http://qrickit.com/api/qr?d=http://billetslelouvre.md-tools.xyz/web/commande/{{ id }}/billet/{{ id_visiteur }};addtext={{ id_visiteur }}&amp;txtcolor=000000&amp;fgdcolor=FFFFFF&amp;bgdcolor=FF6A00&amp;logotext=Le+Louvre&amp;qrsize=150&amp;t=p&amp;e=m" class="qrcode"/>
+            </article>
         </section>
-        <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     </body>
 </html>

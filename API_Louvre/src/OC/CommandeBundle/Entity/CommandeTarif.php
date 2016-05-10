@@ -4,6 +4,7 @@ namespace OC\CommandeBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * CommandeTarif
@@ -170,6 +171,12 @@ class CommandeTarif
     {  
         return $this->visiteurs;
     }
+
+    /******************************************
+    *
+    *   Mes fonctions spéciales               *
+    *
+    *******************************************/
 
     public function toString() {
         $mess="<br>   - ".strval(count($this->visiteurs)). ' visiteurs'

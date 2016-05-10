@@ -1451,16 +1451,16 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v3.12.1",
+            "version": "v3.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "869e119e6f6f1fed4b6cfb617d32bd5aee5b7c81"
+                "reference": "7ba7ff9765e3ba530bf4801a8ffc841a1cc1f77d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/869e119e6f6f1fed4b6cfb617d32bd5aee5b7c81",
-                "reference": "869e119e6f6f1fed4b6cfb617d32bd5aee5b7c81",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/7ba7ff9765e3ba530bf4801a8ffc841a1cc1f77d",
+                "reference": "7ba7ff9765e3ba530bf4801a8ffc841a1cc1f77d",
                 "shasum": ""
             },
             "require": {
@@ -1502,7 +1502,7 @@
                 "payment processing",
                 "stripe"
             ],
-            "time": "2016-04-07 23:05:59"
+            "time": "2016-05-04 22:02:14"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2188,16 +2188,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.8.5",
+            "version": "v2.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "39ddd2383f4113cf67f8b28cde2c9d3fa340c3c2"
+                "reference": "8408816780215fae055599d100b5385d9a247151"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/39ddd2383f4113cf67f8b28cde2c9d3fa340c3c2",
-                "reference": "39ddd2383f4113cf67f8b28cde2c9d3fa340c3c2",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/8408816780215fae055599d100b5385d9a247151",
+                "reference": "8408816780215fae055599d100b5385d9a247151",
                 "shasum": ""
             },
             "require": {
@@ -2318,7 +2318,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-04-29 15:34:08"
+            "time": "2016-05-09 21:45:54"
         },
         {
             "name": "twig/twig",
@@ -2429,12 +2429,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "b4213c21f138c96c29ba2f57349d6fca5b2878a9"
+                "reference": "73c46507fc4244525a402b66fb0339d230717023"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/b4213c21f138c96c29ba2f57349d6fca5b2878a9",
-                "reference": "b4213c21f138c96c29ba2f57349d6fca5b2878a9",
+                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/73c46507fc4244525a402b66fb0339d230717023",
+                "reference": "73c46507fc4244525a402b66fb0339d230717023",
                 "shasum": ""
             },
             "require": {
@@ -2478,7 +2478,7 @@
             "keywords": [
                 "database"
             ],
-            "time": "2015-11-02 22:38:12"
+            "time": "2016-05-05 03:37:05"
         },
         {
             "name": "doctrine/doctrine-fixtures-bundle",
@@ -2591,7 +2591,7 @@
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v2.8.5",
+            "version": "v2.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",

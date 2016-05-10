@@ -274,7 +274,7 @@ Validate_Step2.prototype.validateVisiteurs = function() {
     return !has_error;
 }
 function validateEmail(email) {
-    var re = /\S+@\S+\.\S\S\S/;;
+    var re = new RegExp('^[0-9a-z._-]+@{1}[0-9a-z.-]{2,}[.]{1}[a-z]{2,5}$','i');
     return re.test(email);
 }
 
