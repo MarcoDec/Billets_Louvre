@@ -1,0 +1,4 @@
+DELETE FROM `user` WHERE `email`="";
+DELETE FROM `commande_tarif` WHERE 1;
+DELETE FROM `commande_globale` WHERE 1
+DELETE FROM `user` WHERE 1

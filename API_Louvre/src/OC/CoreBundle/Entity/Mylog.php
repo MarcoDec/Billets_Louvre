@@ -46,8 +46,9 @@ class Mylog
     *           DEBUT
     ***************************************************/
     public function add($controlleur,$log,$datas) {
+        
         $this->log=$log;
-        $this->datas=$datas;
+        $this->datas=serialize($datas);
         $this->date = new \Datetime();
         $em = $controlleur->getDoctrine()->getManager(); 
         $em->persist($this);

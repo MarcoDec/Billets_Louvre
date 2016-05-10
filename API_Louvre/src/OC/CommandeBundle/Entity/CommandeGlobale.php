@@ -309,24 +309,6 @@ class CommandeGlobale
     {
         return $this->commandes;
     }
-    
-    public function getCommandeWithTarif($id_tarif) {
-        foreach ($this->commandes as $commande) {
-            if ($commande->getTarif()->getId() == $id_tarif) {
-                return $commande;
-            }
-        }
-        return null;
-    }
-    
-    public function hasTarif(\OC\CommandeBundle\Entity\Tarif $tarif) {
-        foreach ($this->commandes as $commande) {
-            if ($commande->getTarif()->getId() == $tarif->getId()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Set client
@@ -351,53 +333,7 @@ class CommandeGlobale
     {
         return $this->client;
     }
-    
-    public function getPrice() {
-        $price=0;
-        foreach ($this->commandes as $commande_tarif) {
-            $cout_tarif = $commande_tarif->getTarif()->getCout();
-            $quantity = $commande_tarif->getQuantity();
-            $price+=$cout_tarif*$quantity;
-        }
-        return $price;
-    }
 
-    public function getAmount() {
-        $price=0;
-        foreach ($this->commandes as $commande_tarif) {
-            $cout_tarif = $commande_tarif->getTarif()->getCout();
-            $quantity = $commande_tarif->getQuantity();
-            $price+=$cout_tarif*$quantity;
-        }
-        return $price*100;
-    }
-
-    public function getDesc() {
-        $desc="Vous avez commandé ";
-        $desc.=$this->getNbBillets()." billet(s) pour le louvre ";
-        $desc.="pour le ".($this->getDateReservation()->format('Y-m-d H:i:s'));
-        return $desc;
-    }
-    public function getOrderNumber() {
-        return $this->getSessionId();
-    }
-
-    /**
-    * Cette fonction initalise les items de la commande pour chacun des tarifs existant dans la base
-    * les quantités sont évidemment initialisée à 0
-    */
-    public function initCommandes($control) {
-        // On initialise les commandes
-        $tarifsRepository= $control->getDoctrine()->getManager()->getRepository('OCCommandeBundle:Tarif');
-        $list_tarifs=$tarifsRepository->findAll();
-        foreach($list_tarifs as $tarif) {
-            $commande_tarif=new CommandeTarif();
-            $commande_tarif->setCommandeGlobale($this);
-            $commande_tarif->setTarif($tarif);
-            $commande_tarif->setQuantity(0);
-            $this->addCommande($commande_tarif);
-        }
-    }
 
     /**
      * Set stripe
@@ -445,8 +381,45 @@ class CommandeGlobale
         return $this->paid;
     }
 
+    /******************************************
+    *
+    *   Mes fonctions spéciales               *
+    *
+    *******************************************/
+
+
+    /**
+    * Cette fonction retourne le prix en centime (x100)
+    * On en a besoin pour Stripe
+    */
+    public function getAmount() {
+
+        return $this->getPrice()*100;
+    }
+    
+    /**
+    * Cette fonction retourne le prix en euro
+    * Utilisé pour Paypal
+    */
+    public function getPrice() {
+        $price=0;
+        foreach ($this->commandes as $commande_tarif) {
+            $cout_tarif = $commande_tarif->getTarif()->getCout();
+            $quantity = $commande_tarif->getQuantity();
+            $price+=$cout_tarif*$quantity;
+        }
+        return $price;
+    }
+
     public function isPaid() {
         return (($this->paid) ? 'Payé' : 'Non payé');
+    }
+
+    public function getDesc() {
+        $desc="Vous avez commandé ";
+        $desc.=$this->getNbBillets()." billet(s) pour le louvre ";
+        $desc.="pour le ".($this->getDateReservation()->format('Y-m-d H:i:s'));
+        return $desc;
     }
 
     public function toString() {
@@ -464,5 +437,41 @@ class CommandeGlobale
             }
         }
         return $mess;
+    }
+
+    public function getCommandeWithTarif($id_tarif) {
+        foreach ($this->commandes as $commande) {
+            if ($commande->getTarif()->getId() == $id_tarif) {
+                return $commande;
+            }
+        }
+        return null;
+    }
+    
+    public function hasTarif(\OC\CommandeBundle\Entity\Tarif $tarif) {
+        foreach ($this->commandes as $commande) {
+            if ($commande->getTarif()->getId() == $tarif->getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+    * Cette fonction initalise les items de la commande pour chacun des tarifs existant dans la base
+    * les quantités sont évidemment initialisée à 0
+    */
+    public function initCommandes($control) {
+        // On initialise les commandes
+        $tarifsRepository= $control->getDoctrine()->getManager()->getRepository('OCCommandeBundle:Tarif');
+        $list_tarifs=$tarifsRepository->findAll();
+        foreach($list_tarifs as $tarif) {
+            $commande_tarif=new CommandeTarif();
+            $commande_tarif->setCommandeGlobale($this);
+            $commande_tarif->setTarif($tarif);
+            $commande_tarif->setQuantity(0);
+            $this->addCommande($commande_tarif);
+        }
     }
 }
