@@ -51,11 +51,8 @@
                         <input name="shipping" type="hidden" value="0.00"/>
                         <input name="tax" type="hidden" value="0.00"/>
                         <input name="return" type="hidden" value="{{ url('modes_payment', {'id': commande.id}) }}"/>
-
                         <input name="notify_url" type="hidden" value="{{ url('paypal_ipn') }}"/>
-
                         <input name="cmd" type="hidden" value="_xclick"/> {# Acheter maintenant #}
-
                         <input name="business" type="hidden" value="{{ business }}"/>
                         <input name="item_name" type="hidden" value="Commande billets Le Louvre"/>
                         <input name="no_note" type="hidden" value="1"/>

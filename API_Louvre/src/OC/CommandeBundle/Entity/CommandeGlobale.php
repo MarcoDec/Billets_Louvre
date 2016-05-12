@@ -423,17 +423,18 @@ class CommandeGlobale
     }
 
     public function toString() {
-        $mess="CommandeGlobale n°".strval($this->id)
-        ."<br>Vous avez réservé pour le ".($this->dateReservation->format('Y-m-d'))
-        ." pour la ".(($this->demiJournee) ? 'demi-journée.' : 'journée complète')
-        .strval($this->nbBillets)." billet(s)."
-        ."Le paiement a ".(($this->paid) ? 'bien été effectuée.' : 'n\'est pas encore effectué.<br>');
+        $mess="<br><h2>RECAPITULATIF DE VOTRE COMMANDE</h2>"
+        ."<br>N°".strval($this->id)
+        ."<br>Pour la ".(($this->demiJournee) ? 'demi-journée ' : 'journée complète ')
+        ."du ".($this->dateReservation->format('Y-m-d'))
+        ."<br>Nombre de billets achetés :".strval($this->nbBillets)
+        ."<br>Le paiement a bien été effectuée."
+        ."<br><br><h3>Détails de vos billets</h3>";
         if (count($this->commandes)!=0) {
             foreach ($this->commandes as $key => $commande) {
                 if ($commande->getQuantity()!=0) {
                     $mess=$mess.'<br>-------------------------'.($commande->toString()).'<br>-------------------------';
-                }
-                
+                }   
             }
         }
         return $mess;

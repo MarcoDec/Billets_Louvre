@@ -24,7 +24,7 @@ class DefaultController extends Controller
     */
     public function data_clientAction(Request $request, $id ) {
     	$mylog = new Mylog();
-        $mylog->add($this, 'data_clientAction',$request);
+        $mylog->add($this, 'data_clientAction',$id);
         $commande_globale = new CommandeGlobale();
         $em = $this->getDoctrine()->getManager(); 
         $repo = $em->getRepository('OCCommandeBundle:CommandeGlobale');
@@ -79,11 +79,11 @@ class DefaultController extends Controller
     }
 
     /**
-    * @Route("/Paiement/{id}", name="modes_payment")
+    * @Route("/Paiement/{id}", name="modes_payment", schemes = { "https" })
     */
     public function paiementAction(Request $request, $id)  {
         $mylog = new Mylog();
-        $mylog->add($this, 'paiementAction',$request);
+        $mylog->add($this, 'paiementAction',$id);
         $commande_globale = new CommandeGlobale();
         $em = $this->getDoctrine()->getManager(); 
         $repo = $em->getRepository('OCCommandeBundle:CommandeGlobale');
@@ -207,30 +207,31 @@ class DefaultController extends Controller
 	}
 
     /**
-    * @Route("/ipn/", name="paypal_ipn")
+    * @Route("/ipn", name="paypal_ipn", schemes = { "https" })
     */
     public function ipnAction(Request $request)  {
         //Réception notification de paypal, vérifications et si tout est ok validation
     	$mylog = new Mylog();
-        $mylog->add($this, 'ipnAction',$request);
-        $logfile = $this->container->getParameter('logfile');
+        $mylog->add($this, 'ipnAction', $request);
 
-        $email_account=$this->container->getParameter('paypal_account');
+        // Ouverture d'une liaison sécurisée avec sandbox paypal
+        $fp=fsockopen('ssl://www.sandbox.paypal.com',443, $errno, $errstr, 30);
+        //$fp = fsockopen ('ssl://ipnpb.paypal.com', 443, $errno, $errstr, 30);
         // Construction des paramètres à passer dans l'url de validation
-        $req='cmd=_notify_validate';
+        $req='cmd=_notify-validate';
         foreach ($_POST as $key => $value) {
             $value=urlencode(stripslashes($value));
             $req.="&".$key."=".$value;
         }
         // Construction de l'entête de la réponse à envoyer
-        $header="POST /cgi-bin/webscr HTTP/1.0\r\n";
+        $header="POST /cgi-bin/webscr HTTP/1.1\r\n";
+        $header.="Host: www.sandbox.paypal.com\r\n";
+        //$header .= "Host: ipnpb.paypal.com:443\r\n";
         $header.="Content-Type: application/x-www-form-urlencoded\r\n";
-        $header.="Content-Length: ".strlen($req)."\r\n\r\n";
-        // Ouverture d'une liaison sécurisée avec sandbox paypal
-        //$fp=fsockopen('ssl://sandbox.paypal.com',443, $errno, $errstr, 30);
-        $fp = file_get_contents('https://www.sandbox.paypal.com/',443);
-        //$fp = file_get_contents('https://www.sandbox.paypal.com/cgi-bin/webscr');
-        
+        $header.="Content-Length: ".strlen($req)."\r\n";
+        $header.="Connection: close\r\n\r\n";
+
+       
         // Récupération des éléments postés dans la requête de notification initiale de Paypal
         $item_name= $_POST['item_name'];
         $item_number=$_POST['item_number'];
@@ -243,49 +244,77 @@ class DefaultController extends Controller
         // Conversion sous forme de tableau du paramètre custom envoyé à Paypal dans le formulaire de paiement
         parse_str($_POST['custom'],$custom);
 
-
         if (!$fp) {
-	    	$mylog1 = new Mylog();
-	        $mylog1->add($this, 'Connexion sécurisée Paypal impossible',$fp);
+	    	$mylog = new Mylog();
+	        $mylog->add($this, 'ECHEC Connexion sécurisée Paypal',$payer_email);
+            $mylog = new Mylog();
+            $mylog->add($this, $errstr , $errno );
         } else {
-	    	$mylog1 = new Mylog();
-	        $mylog1->add($this, 'Connexion sécurisée Paypal réussie',$fp);
+	    	$mylog = new Mylog();
+	        $mylog->add($this, 'Connexion sécurisée Paypal ouverte',$payer_email);
 	        // Envoie et mémorisation de la requête de validation via la liaison sécurisée dans $fp
-            fputs($fp, $header.$req);
-            while (!eof($fp)) {
-            	// Récupération de la réponse par 'ligne' de 1024 de longueur
-                $res = fgets($fp,1024);  
-                // Comparaison binaire de la ligne avec VERIFIED
-                if (strcmp($res, "VERIFIED")==0) { // Si les deux chaines sont identiques
-                    $mylog2 = new Mylog();
-	        		$mylog2->add($this, 'Connexion VERIFIED',$fp);
+            fputs ($fp, $header.$req);
+            while (!feof($fp)) {
+                // Récupération de la réponse par 'ligne' de 1024 de longueur max
+                $res = fgets($fp,1024);
+                //$mylog = new Mylog();
+                //$mylog->add($this, 'lignes fp' , $res );
+                if (stripos($res, "VERIFIED") !== false)  { // Si les deux chaines sont identiques
+                    $mylog = new Mylog();
+                    $mylog->add($this, 'Connexion VERIFIEE',$payer_email);
+
                     if ($payment_status == "Completed") {
-	                    $mylog3 = new Mylog();
-		        		$mylog3->add($this, 'Paiement Paypal complété',$payment_status);
+                        $mylog = new Mylog();
+                        $mylog->add($this, 'Paiement Paypal complété',$payment_status);
+                        try {
+                            $email_account=$this->container->getParameter('paypal_account');
+                        } catch (Exception $e) {
+                            $mylog = new Mylog();
+                            $mylog->add($this, 'Erreur Paramètre paypal_account',$e);
+                        }
                         if ($email_account == $receiver_email) {
-		                    $mylog4 = new Mylog();
-			        		$mylog4->add($this, 'Test emails Business OK',$receiver_email);
-                            // vérifier que la somme est bonne
-                            // Si Ok mettre la commandeGlobale à paid avec paypal = true
+                            $mylog = new Mylog();
+                            $mylog->add($this, 'Test emails Business OK',$receiver_email);
+                            // Récupération des données de la commande
+                            $id=(int) $custom['command_id'];
+                            $commande_globale = new CommandeGlobale();
+                            $em = $this->getDoctrine()->getManager(); 
+                            $repo = $em->getRepository('OCCommandeBundle:CommandeGlobale');
+                            $commande_globale=$repo->find($id);
+                            if ($payment_amount == $commande_globale->getPrice() ) {
+                                $mylog = new Mylog();
+                                $mylog->add($this, 'Montant egaux '.$payment_amount, $commande_globale->getPrice());
+                                $commande_globale->setPaid(true);
+                                $commande_globale->setStripe(false);
+                                $commande_globale->setDateCommande(new \Datetime());
+                                $em->persist($commande_globale);
+                                $em->flush();
+                                $billets_filenames = $this->genererBillets($commande_globale);
 
-
+                                $this->sendMail($commande_globale,$billets_filenames);
+                            } else {
+                                // Tentative d'arnaque ???
+                                $mylog = new Mylog();
+                                $mylog->add($this, 'ECHEC Montant non-egaux '.$payment_amount, $commande_globale->getPrice());
+                                // On annule la transaction financière ?! 
+                            }
                         } else {
-		                    $mylog4 = new Mylog();
-			        		$mylog4->add($this, 'ECHEC Test emails Business',$receiver_email);
+                            $mylog = new Mylog();
+                            $mylog->add($this, 'ECHEC Test emails Business',$receiver_email);
+                            // On annule la transaction financière
                         }
                     } else {
                         // Echec de paiement...
-	                    $mylog3 = new Mylog();
-		        		$mylog3->add($this, 'ECHEC Paiement Paypal',$payment_status);
+                        $mylog = new Mylog();
+                        $mylog->add($this, 'ECHEC Paiement Paypal',$payment_status);
                     }
-                } else if (strcmp($res, "INVALID")==0)  {
+                } elseif (stripos($res, "INVALID") !==false)  {
                     //transaction non valide.
-                    $mylog2 = new Mylog();
-	        		$mylog2->add($this, 'Transaction NON VALIDE',$fp);
+                    $mylog = new Mylog();
+                    $mylog->add($this, 'Transaction NON VALIDE',$fp);
                 }
             }
         }
-        //$mylog->add($this,'Requête IPN', 'fin');
     }
 
 
@@ -339,13 +368,16 @@ class DefaultController extends Controller
     */
     private function genereBilletVisiteur(User $visiteur, $id, $tarif, $date_reservation, $demi_journee) {
         $mylog = new Mylog();
-        $mylog->add($this, 'genereBilletVisiteur',$visiteur);
+        $mylog->add($this, 'genereBilletVisiteur',$visiteur->getPrenom().' '.$visiteur->getNom());
         $nom = $visiteur->getNom();
         $prenom = $visiteur->getPrenom();
         $id_visiteur=$visiteur->getId();
-        // TODO mettre le code dans les paramètres
-        $apikey = $this->container->getParameter('api_pdf_key');
-
+        try {
+            $apikey = $this->container->getParameter('api_pdf_key');
+        } catch (Exception $e) {
+            $mylog = new Mylog();
+            $mylog->add($this, 'ECHEC Paramètre api_pdf_key',$e);
+        }
         $urlapi="http://api.html2pdfrocket.com/pdf";
         $hote = $_SERVER['HTTP_HOST'];
         $value = $this->renderView('OCCommandeBundle:billets:billet.html.twig', 
@@ -382,7 +414,13 @@ class DefaultController extends Controller
         $context  = stream_context_create($opts);
         $result = file_get_contents('http://api.html2pdfrocket.com/pdf', false, $context);
         $filename ='Commande_'.$id.'_tarif_'.$tarif.'_visiteur_'.$id_visiteur.'.pdf';
-        file_put_contents( $filename, $result);
+        try {
+            file_put_contents( $filename, $result);
+        } catch (Exception $e) {
+            $mylog = new Mylog();
+            $mylog->add($this, 'ECHEC sauvegarde billets',$e);
+        }
+        
         return $filename;
     }
 
@@ -391,6 +429,8 @@ class DefaultController extends Controller
     *
     */
     private function sendMail($commande_globale, $billets_filenames) {
+        $mylog = new Mylog();
+        $mylog->add($this, 'sendMail',$commande_globale->getClient()->getEmail());
         $message = \Swift_Message::newInstance()
                 ->setSubject('[Le Louvre] Vos Billets')
                 ->setFrom(array($this->container->getParameter('mailer_user') => 'Le Louvre - Service Client'))
