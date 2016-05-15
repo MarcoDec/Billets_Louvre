@@ -20,7 +20,7 @@ use OC\CommandeBundle\Form\CommandeGlobale2Type;
 class DefaultController extends Controller
 {
     /**
-    * @Route("/details/{id}", name="etape_2")
+    * @Route("/details/{id}", name="etape_2", schemes = { "https" })
     */
     public function data_clientAction(Request $request, $id ) {
     	$mylog = new Mylog();
