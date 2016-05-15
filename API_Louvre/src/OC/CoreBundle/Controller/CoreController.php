@@ -3,23 +3,101 @@
 namespace OC\CoreBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use OC\CoreBundle\Entity\InitCommande;
-use OC\CoreBundle\Form\InitCommandeType;
+use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+//  MES ENTITES
 use OC\CommandeBundle\Entity\CommandeGlobale;
-use OC\CommandeBundle\Entity\CommandeTarif;
-use OC\CommandeBundle\Form\CommandeGlobaleType;
-use OC\CommandeBundle\Form\CommandeGlobale2Type;
-use OC\CommandeBundle\Form\CommandeTarifType;
-use OC\CommandeBundle\Form\TarifType;
-use OC\CommandeBundle\Entity\Tarif;
 use OC\CoreBundle\Entity\User;
 use OC\CoreBundle\Entity\Mylog;
+//  MES FORMULAIRES
+use OC\CommandeBundle\Form\CommandeGlobaleType;
 
 class CoreController extends Controller
 {
+    /**
+     * @Route("/", name="etape_1")
+     */
+    public function initialisationAction(Request $request)
+    {
+        $message=null; // Information utilisable pour debogguer si besoin
+        $errors=null; // tableau des erreurs de formulaire envoyé indépendamment pour l'affichage twig.
+        $commande_globale = new CommandeGlobale();
+        
+        // On récupère les données de sessions si elles existent
+        $commande_globale = $this->recoverSession($request->getSession()->getId(),$message);
+
+        $form2=$this->get('form.factory')->create(new CommandeGlobaleType(), $commande_globale);
+        
+        if ($request->isMethod('POST')) {
+            $form2->handleRequest($request); // Récupération des données de la requête
+
+            if ($form2->isValid()) { 
+                $em=$this->getDoctrine()->getManager();
+                $em->persist($commande_globale);    // on persiste immédiatement les données du formulaire
+                $em->flush();   // On les enregistre 
+                $this->completeCommandes($commande_globale, $em); // On adapte les champs visiteurs si besoin
+                
+                $url = $this->get('router')->generate( 'etape_2', array(
+                    'id' => $commande_globale->getId())
+                              );
+                return new RedirectResponse($url); 
+            } else {
+                // Si le formulaire a retourné des erreurs on mémorise le tableau dans $error
+                $errors=$form2->getErrors();
+            }
+
+        }
+        // Lorsqu'on arrive ici, c'est soit la 1ère fois (via un GET), soit via un Postage de formulaire qui aurait échoué (avec contournement JS...)
+        // Dans ces cas, on réaffiche simplement le formulaire.
+        $repo= $this->getDoctrine()->getManager()->getRepository('OCCommandeBundle:Tarif');
+        $tarifs=$repo->findAll();
+        return $this->render('OCCoreBundle:Default:initialisation.html.twig', 
+                             array(
+                                 'tarifs'=>$tarifs,
+                                 'form2'=>$form2->createView(),
+                                 'commandeGlobale'=>$commande_globale,
+                                 'formErrors' => $errors,
+                             )
+                            );
+    }
+
+
+    /**
+     * @Route("/my_ajax", name="my_ajax")
+     */
+    public function requete_ajax_nb_billets(Request $request) {
+        $mylog = new Mylog();
+        //$une_date = new \Datetime($request->get('une_date'));
+        $une_date = \Datetime::createFromFormat('D M d Y H:i:s e+', $request->get('une_date'));
+        $mylog->add($this, 'requete_ajax_nb_billets',$une_date);
+        
+        $nb_billets=1000;
+        if ($une_date != null) {
+            $em=$this->getDoctrine()->getManager();
+            $repoCommande= $em->getRepository('OCCommandeBundle:CommandeGlobale');
+            try {
+                $booked=$repoCommande->countByVisitDate($this, $une_date);
+                $mylog = new Mylog();
+                $mylog->add($this, 'countByVisitDate',$booked);
+            } catch (Exception $e) {
+                $mylog = new Mylog();
+                $mylog->add($this, 'ECHEC countByVisitDate',$e);
+                return new Response("Erreur interne", 500);
+            }
+            $nb_billets=$nb_billets-intval($booked[0]['total']);
+        }
+            return new JsonResponse(array('nb_billets'=>json_encode($nb_billets)));
+    }
+
+/**********************************************************************
+*
+*       FONCTIONS PERSONNALISEES
+*
+**********************************************************************/
+
     /**
     * Cette fonction complète les items manquant de la commande si besoin
     * et ajoute ou supprime autant de champs visiteurs que nécessaire
@@ -98,54 +176,6 @@ class CoreController extends Controller
         $commande->setSessionId($sessionId);
         $mess="Initialisation d'une nouvelle commande";
         return $commande;
-    }
-
-
-    /**
-     * @Route("/", name="etape_1")
-     */
-    public function initialisationAction(Request $request)
-    {
-        $message=null; // Information utilisable pour debogguer si besoin
-        $errors=null; // tableau des erreurs de formulaire envoyé indépendamment pour l'affichage twig.
-        $commande_globale = new CommandeGlobale();
-        
-        // On récupère les données de sessions si elles existent
-        $commande_globale = $this->recoverSession($request->getSession()->getId(),$message);
-
-        $form2=$this->get('form.factory')->create(new CommandeGlobaleType(), $commande_globale);
-        
-        if ($request->isMethod('POST')) {
-            $form2->handleRequest($request); // Récupération des données de la requête
-
-            if ($form2->isValid()) { 
-                $em=$this->getDoctrine()->getManager();
-                $em->persist($commande_globale);    // on persiste immédiatement les données du formulaire
-                $em->flush();   // On les enregistre 
-                $this->completeCommandes($commande_globale, $em); // On adapte les champs visiteurs si besoin
-                
-                $url = $this->get('router')->generate( 'etape_2', array(
-                    'id' => $commande_globale->getId())
-                              );
-                return new RedirectResponse($url); 
-            } else {
-                // Si le formulaire a retourné des erreurs on mémorise le tableau dans $error
-                $errors=$form2->getErrors();
-            }
-
-        }
-        // Lorsqu'on arrive ici, c'est soit la 1ère fois (via un GET), soit via un Postage de formulaire qui aurait échoué (avec contournement JS...)
-        // Dans ces cas, on réaffiche simplement le formulaire.
-        $repo= $this->getDoctrine()->getManager()->getRepository('OCCommandeBundle:Tarif');
-        $tarifs=$repo->findAll();
-        return $this->render('OCCoreBundle:Default:initialisation.html.twig', 
-                             array(
-                                 'tarifs'=>$tarifs,
-                                 'form2'=>$form2->createView(),
-                                 'commandeGlobale'=>$commande_globale,
-                                 'formErrors' => $errors,
-                             )
-                            );
     }
 
 }

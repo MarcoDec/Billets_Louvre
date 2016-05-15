@@ -10,4 +10,16 @@ namespace OC\CommandeBundle\Repository;
  */
 class CommandeRepository extends \Doctrine\ORM\EntityRepository
 {
+	public function countByVisitDate(\Datetime $une_date) {
+	  $qb = $this->createQueryBuilder('a');
+	  $qb->add('SUM(a.nbBillets)')
+	    ->where('a.dateReservation = :date_reservation')
+	    ->where('a.paid = 0')
+	    ->setParameter('date_reservation', $une_date, \Doctrine\DBAL\Types\Type::DATETIME)
+	  ;
+	  return $qb
+	    ->getQuery()
+	    ->getResult()
+	  ;
+	}
 }

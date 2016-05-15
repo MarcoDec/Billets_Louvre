@@ -76,7 +76,10 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-8 lowPadding">
-                                    {{ form_widget(form2.dateReservation) }}
+                                    <div class="row">
+                                        {{ form_widget(form2.dateReservation) }}
+                                    </div>
+                                    <div id = "info_date" class="row" hidden="true">info date</div>
                                 </div>
                                 <div class="col-xs-4 lowPadding">
                                     {#{{ form_row(form2.demiJournee, {'class':'form-control'}) }}#}
@@ -156,6 +159,56 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript" src="{{ asset('bundles/occore/js/events.js') }}"></script>
+    <script type="text/javascript">
+        function ajaxCall(la_date) {
+            var nb_place_libre=0;
+            $.ajax({
+                async: true,
+                url: "{{ path('my_ajax') }}",
+                type: "POST",
+                data: "une_date="+ la_date.toString(),
+                dataType : "json",
+                success : function(msg, statut) {
+                    nb_place_libre=Number(msg['nb_billets']);
+                    },
+                error : function(resultat, statut, erreur) {
+                    console.log('Erreur traitement AJAX');
+                    console.log(resultat);
+                    console.log(statut);
+                    console.log(erreur);
+                },
+                complete: function(resultat, statut) {
+                    if (statut == 'success') {
+                        var info = $('#info_date')[0];
+                        //console.log(info);
+                        var total = Number($('#oc_commandebundle_CommandeGlobale_nbBillets').val());
+                        console.log("nombre dde place souhaité");
+                        console.log(total);
+                        console.log("Nombre de place disponibles");
+                        console.log(nb_place_libre);
+                        console.log("TEST : total > nb_place_libre");
+                        console.log(total > nb_place_libre);
+                        if (total > nb_place_libre) {
+                            $(info).hide().html('');
+                            var newinfo = document.createElement('h4');
+                            newinfo.innerHTML="Attention, il n\'y a plus assez de place au Louvre ce jour là. Il reste "+nb_place_libre+" place(s) libre(s)";
+                            info.appendChild(newinfo);
+                            $(info).show();
+                        } else {
+                            $(info).hide().html('');
+                        }
+
+                    }
+                }
+            });
+        }
+        $("#oc_commandebundle_CommandeGlobale_dateReservation_day, #oc_commandebundle_CommandeGlobale_dateReservation_month,     #oc_commandebundle_CommandeGlobale_dateReservation_year").change(function() {
+            var date_jour = new Date();
+            date_visite = getSelectedDate(); // fonction définie dans event.js
+            //console.log(date_visite);
+            ajaxCall(date_visite);
+        });
+    </script>
 {% endblock %}
 
 {#<link rel="stylesheet" href="{{ asset('bundles/adesignscalendar/css/fullcalendar/fullcalendar.css') }}" />

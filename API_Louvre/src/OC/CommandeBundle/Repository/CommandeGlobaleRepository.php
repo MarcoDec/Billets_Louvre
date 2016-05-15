@@ -2,6 +2,8 @@
 
 namespace OC\CommandeBundle\Repository;
 use Doctrine\ORM\QueryBuilder; 
+use OC\CoreBundle\Entity\Mylog;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 /**
  * CommandeGlobaleRepository
  *
@@ -17,5 +19,18 @@ class CommandeGlobaleRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('a.date_commande','DESC');
         return $qb->getQuery()->getResult();
     }
-    
+    public function countByVisitDate(Controller &$ctrl, \Datetime $la_date) {
+        $date_apres = new \Datetime($la_date->format('Y-m-d').' + 1 day');
+        $qb = $this->createQueryBuilder('a');
+        $qb->select('SUM(a.nbBillets) AS total')
+        	->where('a.dateReservation >= \''.$la_date->format('Y-m-d').'\'')
+            ->andwhere('a.dateReservation < \''.$date_apres->format('Y-m-d').'\'')
+        	->andWhere('a.paid = 1');
+        $query = $qb->getQuery();
+        $mylog = new Mylog();
+        $mylog->add($ctrl, 'QueryBuilder SQL',$query->getSql());
+        $mylog = new Mylog();
+        $mylog->add($ctrl, 'QueryBuilder Parameter',$query->getParameters());
+        return $query->getResult();
+    }
 }
