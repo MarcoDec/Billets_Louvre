@@ -2,7 +2,6 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
-    - { resource: "@MDPlanningBundle/Resources/config/services.yml" }
     - { resource: "@OCCommandeBundle/Resources/config/services.yml" }
     - { resource: "@OCCoreBundle/Resources/config/services.yml" }
 
