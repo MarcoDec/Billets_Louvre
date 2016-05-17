@@ -23,7 +23,7 @@ class DefaultController extends Controller
     * @Route("/details/{id}", name="etape_2", schemes = { "https" })
     */
     public function data_clientAction(Request $request, $id ) {
-    	$mylog = new Mylog();
+    	$mylog = $this->container->get('oc_core.mylog');
         $mylog->add($this, 'data_clientAction',$id);
         $commande_globale = new CommandeGlobale();
         $em = $this->getDoctrine()->getManager(); 
@@ -31,7 +31,7 @@ class DefaultController extends Controller
         $commande_globale=$repo->find($id);
         
         // On vérifie que la commande n'est pas déjà payée (auquel cas on n'affiche pas le formulaire mais on renvoie à la 1ère étape
-        if ($commande_globale->getPaid()) {
+        if ((null == $commande_globale) || $commande_globale->getPaid()) {
             $url = $this->get('router')->generate( 'etape_1', array());
             return new RedirectResponse($url);
         } 
@@ -82,7 +82,7 @@ class DefaultController extends Controller
     * @Route("/Paiement/{id}", name="modes_payment", schemes = { "https" })
     */
     public function paiementAction(Request $request, $id)  {
-        $mylog = new Mylog();
+        $mylog = $this->container->get('oc_core.mylog');
         $mylog->add($this, 'paiementAction',$id);
         $commande_globale = new CommandeGlobale();
         $em = $this->getDoctrine()->getManager(); 
@@ -100,8 +100,8 @@ class DefaultController extends Controller
         if ($commande_globale->getPaid()) {
             $succ="Cette commande a déjà été traitée.<br> Les billets vous ont été envoyés par email.";
         } elseif ($commande_globale->getAmount()==0) {
-            $mylog1 = new Mylog();
-            $mylog1->add($this, 'Gratuit',$commande_globale);
+            //$mylog1 = new Mylog();
+            $mylog->add($this, 'Gratuit',$commande_globale);
             // Il n'y a rien à payer (exemple que des billets Gratuit)
             $commande_globale->setStripe(false);
             $commande_globale->setPaid(true);
@@ -117,8 +117,8 @@ class DefaultController extends Controller
             /************************************************
             * Traitement d'un paiement par Stripe
             *************************************************/
-            $mylog2 = new Mylog();
-            $mylog2->add($this, 'Paiement Stripe',$commande_globale);
+            //$mylog2 = new Mylog();
+            $mylog->add($this, 'Paiement Stripe',$commande_globale);
 
             \Stripe\Stripe::setApiKey($this->container->getParameter('stripe_secret_key'));
             $token=$request->request->get('stripeToken');
@@ -139,8 +139,8 @@ class DefaultController extends Controller
               $this->sendMail($commande_globale,$billets_filenames);
               // Ensuite on renverra vers la page de remerciement
             } catch(\Stripe\Error\Card $e) {
-                $mylog3 = new Mylog();
-                $mylog3->add($this, 'Erreur Stripe',$e);
+                //$mylog3 = new Mylog();
+                $mylog->add($this, 'Erreur Stripe',$e);
                 // Ici on renvoie vers une erreur sur la page de paiement avec le détail de l'erreur
                 $err="L'erreur suivante est arrivée. Le paiement n'a pas pu être effectué.<br>".$e->__toString();
                 $commande_globale->setStripe(true);
@@ -211,7 +211,7 @@ class DefaultController extends Controller
     */
     public function ipnAction(Request $request)  {
         //Réception notification de paypal, vérifications et si tout est ok validation
-    	$mylog = new Mylog();
+    	$mylog = $this->container->get('oc_core.mylog');
         $mylog->add($this, 'ipnAction', $request);
 
         // Ouverture d'une liaison sécurisée avec sandbox paypal
@@ -245,12 +245,12 @@ class DefaultController extends Controller
         parse_str($_POST['custom'],$custom);
 
         if (!$fp) {
-	    	$mylog = new Mylog();
+	    	//$mylog = new Mylog();
 	        $mylog->add($this, 'ECHEC Connexion sécurisée Paypal',$payer_email);
-            $mylog = new Mylog();
+            //$mylog = new Mylog();
             $mylog->add($this, $errstr , $errno );
         } else {
-	    	$mylog = new Mylog();
+	    	//$mylog = new Mylog();
 	        $mylog->add($this, 'Connexion sécurisée Paypal ouverte',$payer_email);
 	        // Envoie et mémorisation de la requête de validation via la liaison sécurisée dans $fp
             fputs ($fp, $header.$req);
@@ -260,20 +260,20 @@ class DefaultController extends Controller
                 //$mylog = new Mylog();
                 //$mylog->add($this, 'lignes fp' , $res );
                 if (stripos($res, "VERIFIED") !== false)  { // Si les deux chaines sont identiques
-                    $mylog = new Mylog();
+                    //$mylog = new Mylog();
                     $mylog->add($this, 'Connexion VERIFIEE',$payer_email);
 
                     if ($payment_status == "Completed") {
-                        $mylog = new Mylog();
+                        //$mylog = new Mylog();
                         $mylog->add($this, 'Paiement Paypal complété',$payment_status);
                         try {
                             $email_account=$this->container->getParameter('paypal_account');
                         } catch (Exception $e) {
-                            $mylog = new Mylog();
+                            //$mylog = new Mylog();
                             $mylog->add($this, 'Erreur Paramètre paypal_account',$e);
                         }
                         if ($email_account == $receiver_email) {
-                            $mylog = new Mylog();
+                            //$mylog = new Mylog();
                             $mylog->add($this, 'Test emails Business OK',$receiver_email);
                             // Récupération des données de la commande
                             $id=(int) $custom['command_id'];
@@ -282,7 +282,7 @@ class DefaultController extends Controller
                             $repo = $em->getRepository('OCCommandeBundle:CommandeGlobale');
                             $commande_globale=$repo->find($id);
                             if ($payment_amount == $commande_globale->getPrice() ) {
-                                $mylog = new Mylog();
+                                //$mylog = new Mylog();
                                 $mylog->add($this, 'Montant egaux '.$payment_amount, $commande_globale->getPrice());
                                 $commande_globale->setPaid(true);
                                 $commande_globale->setStripe(false);
@@ -294,23 +294,23 @@ class DefaultController extends Controller
                                 $this->sendMail($commande_globale,$billets_filenames);
                             } else {
                                 // Tentative d'arnaque ???
-                                $mylog = new Mylog();
+                                //$mylog = new Mylog();
                                 $mylog->add($this, 'ECHEC Montant non-egaux '.$payment_amount, $commande_globale->getPrice());
                                 // On annule la transaction financière ?! 
                             }
                         } else {
-                            $mylog = new Mylog();
+                            //$mylog = new Mylog();
                             $mylog->add($this, 'ECHEC Test emails Business',$receiver_email);
                             // On annule la transaction financière
                         }
                     } else {
                         // Echec de paiement...
-                        $mylog = new Mylog();
+                        //$mylog = new Mylog();
                         $mylog->add($this, 'ECHEC Paiement Paypal',$payment_status);
                     }
                 } elseif (stripos($res, "INVALID") !==false)  {
                     //transaction non valide.
-                    $mylog = new Mylog();
+                    //$mylog = new Mylog();
                     $mylog->add($this, 'Transaction NON VALIDE',$fp);
                 }
             }
@@ -329,7 +329,7 @@ class DefaultController extends Controller
     * Cette fonction génère l'ensemble des billets relatifs à une commande globale
     */
     private function genererBillets(CommandeGlobale $commande_globale) {
-        $mylog = new Mylog();
+        $mylog = $this->container->get('oc_core.mylog');
         $mylog->add($this, 'genererBillets',$commande_globale);
         $commandes = $commande_globale->getCommandes();
         $id=$commande_globale->getId();
@@ -349,7 +349,7 @@ class DefaultController extends Controller
     */
     private function genereBilletsTarif(CommandeTarif $commande_tarif, $id, $date_reservation, $demi_journee) {
         $filenames= array();
-        $mylog = new Mylog();
+        $mylog = $this->container->get('oc_core.mylog');
         $mylog->add($this, 'genereBilletsTarif',$commande_tarif);
         $controlleur = new Controller();
         if ($commande_tarif->getQuantity()!=0) {
@@ -367,7 +367,7 @@ class DefaultController extends Controller
     * Cette fonction génère le billet pdf du visiteur passé en paramètre.
     */
     private function genereBilletVisiteur(User $visiteur, $id, $tarif, $date_reservation, $demi_journee) {
-        $mylog = new Mylog();
+        $mylog = $this->container->get('oc_core.mylog');
         $mylog->add($this, 'genereBilletVisiteur',$visiteur->getPrenom().' '.$visiteur->getNom());
         $nom = $visiteur->getNom();
         $prenom = $visiteur->getPrenom();
@@ -375,7 +375,6 @@ class DefaultController extends Controller
         try {
             $apikey = $this->container->getParameter('api_pdf_key');
         } catch (Exception $e) {
-            $mylog = new Mylog();
             $mylog->add($this, 'ECHEC Paramètre api_pdf_key',$e);
         }
         $urlapi="http://api.html2pdfrocket.com/pdf";
@@ -417,7 +416,6 @@ class DefaultController extends Controller
         try {
             file_put_contents( $filename, $result);
         } catch (Exception $e) {
-            $mylog = new Mylog();
             $mylog->add($this, 'ECHEC sauvegarde billets',$e);
         }
         
@@ -429,7 +427,6 @@ class DefaultController extends Controller
     *
     */
     private function sendMail($commande_globale, $billets_filenames) {
-        $mylog = new Mylog();
         $mylog->add($this, 'sendMail',$commande_globale->getClient()->getEmail());
         $message = \Swift_Message::newInstance()
                 ->setSubject('[Le Louvre] Vos Billets')

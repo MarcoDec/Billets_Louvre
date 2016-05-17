@@ -16,7 +16,7 @@
                     <div class="row">
                         <aside>
                             <header class="row">
-                                    <h1>Veuillez sélectionner le nombre de place au tarif souhaité</h1>
+                                    <h1>Veuillez sélectionner le nombre de place aux tarifs souhaités</h1>
                             </header>
                             <div class="row">
                                 {% for key, tarif in tarifs %}
@@ -75,21 +75,26 @@
                                 <legend><span class="glyphicon glyphicon-shopping-cart"></span> VOTRE COMMANDE</legend>
                             </div>
                             <div class="row">
-                                <div class="col-xs-8 lowPadding">
+                                <div class="col-xs-12 col-sm-8 lowPadding">
                                     <div class="row">
                                         {{ form_widget(form2.dateReservation) }}
                                     </div>
+                                    <div class="row">
+                                        <div class="info col-xs-12 lowPadding">Le Louvre est fermé les samedis et dimanches.</div>
+                                    </div>
                                     <div id = "info_date" class="row" hidden="true">info date</div>
                                 </div>
-                                <div class="col-xs-4 lowPadding">
-                                    {#{{ form_row(form2.demiJournee, {'class':'form-control'}) }}#}
+                                <div class="col-xs-12 col-sm-4 lowPadding">
+                                    <div class="row">
+                                        {#{{ form_row(form2.demiJournee, {'class':'form-control'}) }}#}
                                         {{ form_widget(form2.demiJournee) }}
+                                    </div>
+                                    <div class="row">
+                                        <div class="info col-xs-12 lowPadding">Toute réservation pour la 1/2 journée courantes doit être passée avant 14h00.</div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="info col-xs-6 lowPadding">Le Louvre est fermé les samedis et dimanches.</div>
-                                <div class="info col-xs-6 lowPadding">Toute réservation pour la 1/2 journée courantes doit être passée avant 14h00.</div>
-                            </div>
+
                             <div class="row">
                                 <table>
                                     <thead>

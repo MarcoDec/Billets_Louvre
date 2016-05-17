@@ -69,7 +69,7 @@ class CoreController extends Controller
      * @Route("/my_ajax", name="my_ajax")
      */
     public function requete_ajax_nb_billets(Request $request) {
-        $mylog = new Mylog();
+        $mylog = $this->container->get('oc_core.mylog');
         //$une_date = new \Datetime($request->get('une_date'));
         $une_date = \Datetime::createFromFormat('D M d Y H:i:s e+', $request->get('une_date'));
         $mylog->add($this, 'requete_ajax_nb_billets',$une_date);
@@ -80,10 +80,10 @@ class CoreController extends Controller
             $repoCommande= $em->getRepository('OCCommandeBundle:CommandeGlobale');
             try {
                 $booked=$repoCommande->countByVisitDate($this, $une_date);
-                $mylog = new Mylog();
+                //$mylog = new Mylog();
                 $mylog->add($this, 'countByVisitDate',$booked);
             } catch (Exception $e) {
-                $mylog = new Mylog();
+                //$mylog = new Mylog();
                 $mylog->add($this, 'ECHEC countByVisitDate',$e);
                 return new Response("Erreur interne", 500);
             }

@@ -45,15 +45,7 @@ class Mylog
     * Mes fonctions personnalisées
     *           DEBUT
     ***************************************************/
-    public function add($controlleur,$log,$datas) {
-        
-        $this->log=$log;
-        $this->datas=serialize($datas);
-        $this->date = new \Datetime();
-        $em = $controlleur->getDoctrine()->getManager(); 
-        $em->persist($this);
-        $em->flush($this);
-    }
+
 
     /**************************************************
     * Mes fonctions personnalisées
@@ -116,5 +108,28 @@ class Mylog
     {
         return $this->datas;
     }
-}
 
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return Mylog
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+}

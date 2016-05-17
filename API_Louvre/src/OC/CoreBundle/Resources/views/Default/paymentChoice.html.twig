@@ -9,7 +9,11 @@
         <div class="row">
             <aside class="col-sm-offset-2 col-sm-8">
                 <header>
+                    {% if commande.getPaid() %}
+                    <h1>Paiement réussi ! Merci de votre confiance !</h1>
+                    {% else %}
                     <h1>Choississez votre moyen de paiement</h1>
+                    {% endif %}
                 </header>
             </aside>
             <section class="col-sm-offset-2 col-sm-8">
@@ -29,6 +33,10 @@
                 {% endfor %}
                 <h4 class="col-sm-6">Coût total : {{ commande.getPrice() }} € </h4>
                 {% if commande.getPaid() %}
+                    <a href="http://twitter.com/share" class="twitter-share-button" data-count="vertical" data-via="InfoWebMaster">Tweet</a>
+                        <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+
+                    <iframe src="http://www.facebook.com/plugins/like.php?href={{ url('etape_1') }}&layout=box_count&show_faces=true&width=65&action=like&font=arial&colorscheme=light&height=65" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:65px; height:65px; margin-top:3px;" allowTransparency="true"></iframe>
                 {% else %}
                     <form action="{{ path('modes_payment', {'id': commande.id}) }}" method="POST"  class="col-sm-3">
                       <script
@@ -59,7 +67,7 @@
                         <input name="lc" type="hidden" value="FR"/>
                         <input name="bn" type="hidden" value="PP-BuyNowBF"/>
                         <input name="custom" type="hidden" value="command_id={{ commande.id }}"/>
-                        <input type="submit" value="Pay with PayPal" class="btn btn-info btn-block">
+                        <input type="submit" value="Pay with PayPal" class="btn btn-info">
                     </form>
                 {% endif %}
             </section>
