@@ -427,6 +427,7 @@ class DefaultController extends Controller
     *
     */
     private function sendMail($commande_globale, $billets_filenames) {
+        $mylog = $this->container->get('oc_core.mylog');
         $mylog->add($this, 'sendMail',$commande_globale->getClient()->getEmail());
         $message = \Swift_Message::newInstance()
                 ->setSubject('[Le Louvre] Vos Billets')
